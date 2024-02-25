@@ -11,7 +11,7 @@ class UpdateAkunRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,24 @@ class UpdateAkunRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'nama_akun' => ['required'],
+            'email' => ['required', 'email', 'unique:akuns,email,' . $this->id],
+            'nip'   => ['required'],
+            'no_whatsapp'   => ['required'],
+            'role'   => ['required'],
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'nama_akun.required' => 'Nama akun wajib diisi!',
+            'email.required' => 'Email wajib diisi!',
+            'email.email'   => 'Harus menggunakan email valid. Contoh: contoh@gmail.com',
+            'email.unique'  => 'Email sudah digunakan. Silahkan gunakan email yang lain.',
+            'nip.required' => 'NIP akun wajib diisi!',
+            'no_whatsapp.required' => 'No Whatsapp wajib diisi!',
+            'role.required' => 'Role wajib diisi!',
         ];
     }
 }

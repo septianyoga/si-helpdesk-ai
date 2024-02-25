@@ -18,6 +18,7 @@ class UserAkses
         if (in_array(auth()->user()->role, $roles)) {
             return $next($request);
         }
+        notify()->warning('Anda tidak diperbolehkan mengakses halaman ini!');
         return redirect()->to('/dashboard');
     }
 }

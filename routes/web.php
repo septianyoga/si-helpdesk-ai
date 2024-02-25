@@ -26,7 +26,13 @@ Route::middleware('guest')->group(function () {
 });
 Route::middleware('auth')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-    Route::get('/akun', [AkunController::class, 'index'])->name('akun');
-    Route::post('/akun', [AkunController::class, 'store']);
+
+    Route::group(['middleware' => 'userAkses:Admin'], function () {
+        Route::get('/akun', [AkunController::class, 'index'])->name('akun');
+        Route::post('/akun', [AkunController::class, 'store']);
+        Route::delete('/akun', [AkunController::class, 'destroy']);
+        Route::get('akun/{id}', [AkunController::class, 'edit']);
+        Route::post('/akun/{id}', [AkunController::class, 'update']);
+    });
 });
 Route::get('/logout', [LoginController::class, 'destroy']);
