@@ -28,6 +28,9 @@ class StoreAkunRequest extends FormRequest
             'no_whatsapp'   => ['required'],
             'role'   => ['required'],
             'password'   => ['required'],
+            'tim_id'   => ['required'],
+            'jabatan_id'   => ['required'],
+            'divisi_id'   => ['required'],
         ];
     }
 
@@ -42,6 +45,9 @@ class StoreAkunRequest extends FormRequest
             'no_whatsapp.required' => 'No Whatsapp wajib diisi!',
             'role.required' => 'Role wajib diisi!',
             'password.required' => 'Password wajib diisi!',
+            'tim_id.required' => 'Tim wajib diisi!',
+            'jabatan_id.required' => 'Tim wajib diisi!',
+            'divisi_id.required' => 'Tim wajib diisi!',
         ];
     }
 }

@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Akun;
 use App\Http\Requests\StoreAkunRequest;
 use App\Http\Requests\UpdateAkunRequest;
+use App\Models\Divisi;
+use App\Models\Jabatan;
+use App\Models\Tim;
 use Illuminate\Support\Facades\Hash;
 
 class AkunController extends Controller
@@ -15,10 +18,16 @@ class AkunController extends Controller
     public function index()
     {
         //
-        $akun = Akun::all();
+        $akun = Akun::with(['tim', 'jabatan', 'divisi'])->get();
+        $tim = Tim::all();
+        $jabatan = Jabatan::all();
+        $divisi = Divisi::all();
         return view('admin.akun.index', [
             'title' => 'Kelola Akun',
-            'akuns'  => $akun
+            'akuns'  => $akun,
+            'tims'  => $tim,
+            'jabatans'  => $jabatan,
+            'divisis'  => $divisi,
         ]);
     }
 
@@ -44,6 +53,9 @@ class AkunController extends Controller
             'no_whatsapp'   => $request->no_whatsapp,
             'role'   => $request->role,
             'password'   => Hash::make($request->password),
+            'tim_id'   => $request->tim_id,
+            'jabatan_id'   => $request->jabatan_id,
+            'divisi_id'   => $request->divisi_id,
         ]);
         notify()->success('Akun berhasil ditambakan!');
         return redirect()->to('/akun');
@@ -64,9 +76,15 @@ class AkunController extends Controller
     {
         //
         $akun = $akun->findOrFail($id);
+        $tim = Tim::all();
+        $jabatan = Jabatan::all();
+        $divisi = Divisi::all();
         return view('admin.akun.edit', [
             'title' => 'Edit Akun',
-            'akun'  => $akun
+            'akun'  => $akun,
+            'tims'  => $tim,
+            'jabatans'  => $jabatan,
+            'divisis'  => $divisi,
         ]);
     }
 
@@ -84,6 +102,9 @@ class AkunController extends Controller
             'no_whatsapp' => $request->no_whatsapp,
             'role' => $request->role,
             'password' => Hash::make($request->password),
+            'tim_id' => $request->tim_id,
+            'jabatan_id' => $request->jabatan_id,
+            'divisi_id' => $request->divisi_id,
         ];
         if ($request->password == null) {
             unset($data['password']);

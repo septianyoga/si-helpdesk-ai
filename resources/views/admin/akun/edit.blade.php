@@ -63,8 +63,7 @@
                             @enderror
                         </div>
                     </div>
-                    <div class="mb-3
-                                    row">
+                    <div class="mb-3 row">
                         <label class="col-3 col-form-label required">Role</label>
                         <div class="col">
                             <select type="text" class="form-select @error('role') is-invalid @enderror" id="select-users"
@@ -83,7 +82,7 @@
                         </div>
                     </div>
                     <div class="mb-3 row">
-                        <label class="col-3 col-form-label required">Password</label>
+                        <label class="col-3 col-form-label">Password</label>
                         <div class="col">
                             <input type="password" class="form-control" placeholder="Masukan Password" name="password">
                             <small class="form-hint">
@@ -91,9 +90,64 @@
                             </small>
                         </div>
                     </div>
+                    <div class="mb-3 row">
+                        <label class="col-3 col-form-label required">Tim</label>
+                        <div class="col">
+                            <select type="text" class="form-select @error('tim_id') is-invalid @enderror"
+                                id="select-users" name="tim_id">
+                                <option value="" hidden>-- Pilih Tim --</option>
+                                @foreach ($tims as $tim)
+                                    <option value="{{ $tim->id }}" {{ $akun->tim_id == $tim->id ? 'selected' : '' }}>
+                                        {{ $tim->nama_tim }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            @error('role')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    </div>
+                    <div class="mb-3 row">
+                        <label class="col-3 col-form-label required">Jabatan</label>
+                        <div class="col">
+                            <select type="text" class="form-select @error('jabatan_id') is-invalid @enderror"
+                                id="select-users" name="jabatan_id">
+                                <option value="" hidden>-- Pilih Jabatan --</option>
+                                @foreach ($jabatans as $jabatan)
+                                    <option value="{{ $jabatan->id }}"
+                                        {{ $akun->jabatan_id == $jabatan->id ? 'selected' : '' }}>
+                                        {{ $jabatan->nama_jabatan }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            @error('role')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    </div>
+                    <div class="mb-3 row">
+                        <label class="col-3 col-form-label required">Divisi</label>
+                        <div class="col">
+                            <select type="text" class="form-select @error('divisi_id') is-invalid @enderror"
+                                id="select-users" name="divisi_id">
+                                <option value="" hidden>-- Pilih Divisi --</option>
+                                @foreach ($divisis as $divisi)
+                                    <option value="{{ $divisi->id }}"
+                                        {{ $akun->divisi_id == $divisi->id ? 'selected' : '' }}>
+                                        {{ $divisi->nama_divisi }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            @error('role')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    </div>
+
                 </div>
-                <div class="card-footer text-end">
-                    <button type="submit" class="btn btn-primary">Submit</button>
+                <div class="card-footer d-flex justify-content-between">
+                    <a href="/akun" class="btn btn-secondary">Kembali</a>
+                    <button type="submit" class="btn btn-primary">Edit</button>
                 </div>
         </div>
         </form>

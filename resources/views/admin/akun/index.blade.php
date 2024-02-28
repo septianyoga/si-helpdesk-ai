@@ -40,6 +40,9 @@
                                     <th>NIP</th>
                                     <th>No WhatsApp</th>
                                     <th>Role</th>
+                                    <th>Tim</th>
+                                    <th>Jabatan</th>
+                                    <th>Divisi</th>
                                     <th>Status</th>
                                     <th>Aksi</th>
                                 </tr>
@@ -53,13 +56,16 @@
                                         <td>{{ $akun->nip }}</td>
                                         <td>{{ $akun->no_whatsapp }}</td>
                                         <td>{{ $akun->role }}</td>
+                                        <td>{{ $akun->tim != null ? $akun->tim->nama_tim : '' }}</td>
+                                        <td>{{ $akun->jabatan != null ? $akun->jabatan->nama_jabatan : '' }}</td>
+                                        <td>{{ $akun->divisi != null ? $akun->divisi->nama_divisi : '' }}</td>
                                         <td>{{ $akun->is_active ? 'Aktif' : 'Non Aktif' }}</td>
                                         <td>
                                             <a href="#"
                                                 onclick="handleDelete('{{ $akun->id }}', '{{ $akun->nama_akun }}', '{{ $akun->is_active }}')"
                                                 class="btn btn-{{ $akun->is_active == 1 ? 'danger' : 'success' }} btn-icon btn-sm"
                                                 data-bs-toggle="modal" data-bs-target="#modal-danger"
-                                                title="{{ $akun->is_active == 1 ? 'Non' : '' }} Aktifkan">
+                                                title="{{ $akun->is_active == 1 ? 'Non Aktifkan' : 'Aktifkan' }}">
                                                 @if ($akun->is_active == 0)
                                                     <svg xmlns="http://www.w3.org/2000/svg"
                                                         class="icon icon-tabler icon-tabler-check" width="24"
@@ -81,7 +87,8 @@
                                                     </svg>
                                                 @endif
                                             </a>
-                                            <a href="/akun/{{ $akun->id }}" class="btn btn-info btn-icon btn-sm">
+                                            <a href="/akun/{{ $akun->id }}" class="btn btn-info btn-icon btn-sm"
+                                                title="Edit">
                                                 <svg xmlns="http://www.w3.org/2000/svg"
                                                     class="icon icon-tabler icon-tabler-edit" width="24" height="24"
                                                     viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
@@ -157,7 +164,7 @@
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Add a new team</h5>
+                    <h5 class="modal-title">Tambah Akun</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <form action="/akun" method="POST">
@@ -166,7 +173,7 @@
                         <div class="row mb-3 align-items-end">
                             <div class="col">
                                 <div class="mb-3">
-                                    <label class="form-label">Nama Akun</label>
+                                    <label class="form-label required">Nama Akun</label>
                                     <input type="text" class="form-control @error('nama_akun') is-invalid @enderror"
                                         name="nama_akun" placeholder="Masukan Nama Akun" value="{{ old('nama_akun') }}">
                                     @error('nama_akun')
@@ -174,7 +181,7 @@
                                     @enderror
                                 </div>
                                 <div class="mb-3">
-                                    <label class="form-label">Email</label>
+                                    <label class="form-label required">Email</label>
                                     <input type="text" class="form-control @error('email') is-invalid @enderror"
                                         name="email" placeholder="Masukan Email">
                                     @error('email')
@@ -182,7 +189,7 @@
                                     @enderror
                                 </div>
                                 <div class="mb-3">
-                                    <label class="form-label">NIP</label>
+                                    <label class="form-label required">NIP</label>
                                     <input type="text" class="form-control @error('nip') is-invalid @enderror"
                                         name="nip" placeholder="Masukan NIP" value="{{ old('nip') }}">
                                     @error('nip')
@@ -190,7 +197,7 @@
                                     @enderror
                                 </div>
                                 <div class="mb-3">
-                                    <label class="form-label">No WhatsApp</label>
+                                    <label class="form-label required">No WhatsApp</label>
                                     <input type="number" class="form-control @error('no_whatsapp') is-invalid @enderror"
                                         name="no_whatsapp" placeholder="Masukan No WhatsApp"
                                         value="{{ old('no_whatsapp') }}">
@@ -199,7 +206,7 @@
                                     @enderror
                                 </div>
                                 <div class="mb-3">
-                                    <label class="form-label">Role</label>
+                                    <label class="form-label required">Role</label>
                                     <select type="text" class="form-select @error('role') is-invalid @enderror"
                                         id="select-users" name="role">
                                         <option value="" hidden>-- Pilih --</option>
@@ -217,10 +224,57 @@
                                     @enderror
                                 </div>
                                 <div>
-                                    <label class="form-label">Password</label>
+                                    <label class="form-label required">Password</label>
                                     <input type="password" class="form-control @error('password') is-invalid @enderror"
                                         name="password" placeholder="Masukan Password">
                                     @error('password')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label required">Tim</label>
+                                    <select type="text" class="form-select @error('tim_id') is-invalid @enderror"
+                                        id="select-users" name="tim_id">
+                                        <option value="" hidden>-- Pilih Tim --</option>
+                                        @foreach ($tims as $tim)
+                                            <option value="{{ $tim->id }}"
+                                                {{ old('tim_id') == $tim->id ? 'selected' : '' }}>{{ $tim->nama_tim }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                    @error('role')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label required">Jabatan</label>
+                                    <select type="text" class="form-select @error('jabatan_id') is-invalid @enderror"
+                                        id="select-users" name="jabatan_id">
+                                        <option value="" hidden>-- Pilih Jabatan --</option>
+                                        @foreach ($jabatans as $jabatan)
+                                            <option value="{{ $jabatan->id }}"
+                                                {{ old('jabatan_id') == $jabatan->id ? 'selected' : '' }}>
+                                                {{ $jabatan->nama_jabatan }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                    @error('role')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label required">Divisi</label>
+                                    <select type="text" class="form-select @error('divisi_id') is-invalid @enderror"
+                                        id="select-users" name="divisi_id">
+                                        <option value="" hidden>-- Pilih Divisi --</option>
+                                        @foreach ($divisis as $divisi)
+                                            <option value="{{ $divisi->id }}"
+                                                {{ old('divisi_id') == $divisi->id ? 'selected' : '' }}>
+                                                {{ $divisi->nama_divisi }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                    @error('role')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>
