@@ -155,9 +155,31 @@
                             </span>
                         </a>
                     </li>
+                    <li class="nav-item {{ $title == 'Kelola Kategori Permasalahan' ? 'active' : '' }}">
+                        <a class="nav-link" href="/kategori_masalah">
+                            <span
+                                class="nav-link-icon d-md-none d-lg-inline-block"><!-- Download SVG icon from http://tabler-icons.io/i/ghost -->
+                                <svg xmlns="http://www.w3.org/2000/svg"
+                                    class="icon icon-tabler icon-tabler-message-2-question" width="24"
+                                    height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+                                    fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                    <path d="M8 9h8" />
+                                    <path d="M8 13h6" />
+                                    <path
+                                        d="M14.5 18.5l-2.5 2.5l-3 -3h-3a3 3 0 0 1 -3 -3v-8a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v4.5" />
+                                    <path d="M19 22v.01" />
+                                    <path d="M19 19a2.003 2.003 0 0 0 .914 -3.782a1.98 1.98 0 0 0 -2.414 .483" />
+                                </svg>
+                            </span>
+                            <span class="nav-link-title">
+                                Kategori Permasalahan
+                            </span>
+                        </a>
+                    </li>
                 </ul>
                 <div class="my-2 my-md-0 flex-grow-1 flex-md-grow-0 order-first order-md-last">
-                    <form action="./" method="get" autocomplete="off" novalidate>
+                    {{-- <form action="./" method="get" autocomplete="off" novalidate>
                         <div class="input-icon">
                             <span class="input-icon-addon">
                                 <!-- Download SVG icon from http://tabler-icons.io/i/search -->
@@ -172,7 +194,7 @@
                             <input type="text" value="" class="form-control" placeholder="Search…"
                                 aria-label="Search in website">
                         </div>
-                    </form>
+                    </form> --}}
                 </div>
             </div>
         </div>

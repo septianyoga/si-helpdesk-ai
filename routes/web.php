@@ -5,6 +5,7 @@ use App\Http\Controllers\DampakPermasalahanController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DivisiController;
 use App\Http\Controllers\JabatanController;
+use App\Http\Controllers\KategoriPermasalahanController;
 use App\Http\Controllers\KnowledgebaseController;
 use App\Http\Controllers\LandingpageController;
 use App\Http\Controllers\LoginController;
@@ -68,6 +69,12 @@ Route::middleware('auth')->group(function () {
         Route::delete('/kb', [KnowledgebaseController::class, 'destroy']);
         Route::get('/kb/{id}', [KnowledgebaseController::class, 'edit']);
         Route::patch('/kb/{id}', [KnowledgebaseController::class, 'update']);
+
+        Route::get('/kategori_masalah', [KategoriPermasalahanController::class, 'index'])->name('kategori_masalah');
+        Route::post('/kategori_masalah', [KategoriPermasalahanController::class, 'store']);
+        Route::delete('/kategori_masalah', [KategoriPermasalahanController::class, 'destroy']);
+        Route::get('/kategori_masalah/{id}', [KategoriPermasalahanController::class, 'edit']);
+        Route::patch('/kategori_masalah/{id}', [KategoriPermasalahanController::class, 'update']);
     });
 });
 Route::get('/logout', [LoginController::class, 'destroy']);
