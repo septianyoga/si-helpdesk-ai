@@ -18,14 +18,21 @@
     <title>{{ $title }}</title>
     <!-- CSS files -->
     @include('layouts.head')
+    <style>
+        .layout-ask {
+            min-height: 0% !important;
+        }
+    </style>
 </head>
 
 <body>
     <script src="{{ asset('template/back/dist/js/demo-theme.min.js?1692870487') }}"></script>
-    <div class="page">
+    <div class="page {{ $title == 'Tanya AI' ? 'layout-ask' : '' }}">
         <!-- Navbar -->
         @include('layouts.header')
-        @include('layouts.navbar')
+        @if ($title != 'Tanya AI')
+            @include('layouts.navbar')
+        @endif
         <div class="page-wrapper">
             <!-- Page header -->
             @yield('content')

@@ -9,8 +9,15 @@ class LandingpageController extends Controller
     //
     public function index()
     {
-        return view('welcome', [
+        return view('landingpage.index', [
             'title' => 'Landing Page'
+        ]);
+    }
+
+    public function ask_ai()
+    {
+        return view('landingpage.ask_ai', [
+            'title' => 'Tanya AI'
         ]);
     }
 }

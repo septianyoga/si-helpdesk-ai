@@ -26,6 +26,8 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [LandingpageController::class, 'index']);
 
+Route::get('/tanya_ai', [LandingpageController::class, 'ask_ai']);
+
 Route::middleware('guest')->group(function () {
     Route::get('/login', [LoginController::class, 'index'])->name('login');
     Route::post('/login', [LoginController::class, 'store']);
