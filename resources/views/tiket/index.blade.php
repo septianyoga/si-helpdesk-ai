@@ -19,7 +19,7 @@
                             <path d="M12 5l0 14" />
                             <path d="M5 12l14 0" />
                         </svg>
-                        Tambah Akun
+                        Tambah Tiket
                     </button>
                 </div>
             </div>
@@ -48,7 +48,7 @@
                                 </tr>
                             </thead>
                             <tbody class="table-tbody">
-                                @foreach ($akuns as $akun)
+                                {{-- @foreach ($akuns as $akun)
                                     <tr class="align-middle">
                                         <td>{{ $loop->iteration }}.</td>
                                         <td>{{ $akun->nama_akun }}</td>
@@ -102,7 +102,7 @@
                                             </a>
                                         </td>
                                     </tr>
-                                @endforeach
+                                @endforeach --}}
                             </tbody>
                         </table>
                     </div>
@@ -146,8 +146,7 @@
                                         Batal
                                     </a></div>
                                 <div class="col">
-                                    <button type="submit" class="btn btn-danger w-100"
-                                        data-bs-dismiss="modal">Ya</button>
+                                    <button type="submit" class="btn btn-danger w-100" data-bs-dismiss="modal">Ya</button>
                                     {{-- <a href="#" class="btn btn-danger w-100" data-bs-dismiss="modal">
                                         Hapus
                                     </a> --}}
@@ -160,11 +159,11 @@
         </div>
     </div>
     {{-- modal tambah --}}
-    <div class="modal modal-blur fade" id="modal-tambah" tabindex="-1" role="dialog" aria-hidden="true">
+    {{-- <div class="modal modal-blur fade" id="modal-tambah" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Tambah Akun</h5>
+                    <h5 class="modal-title">Tambah Tiket</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <form action="/akun" method="POST">
@@ -173,9 +172,9 @@
                         <div class="row mb-3 align-items-end">
                             <div class="col">
                                 <div class="mb-3">
-                                    <label class="form-label required">Nama Akun</label>
+                                    <label class="form-label required">Nama Tiket</label>
                                     <input type="text" class="form-control @error('nama_akun') is-invalid @enderror"
-                                        name="nama_akun" placeholder="Masukan Nama Akun" value="{{ old('nama_akun') }}">
+                                        name="nama_akun" placeholder="Masukan Nama Tiket" value="{{ old('nama_akun') }}">
                                     @error('nama_akun')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
@@ -288,7 +287,7 @@
                 </form>
             </div>
         </div>
-    </div>
+    </div> --}}
 
     @if ($errors->any())
         <script>

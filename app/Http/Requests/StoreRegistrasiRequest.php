@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreAkunRequest extends FormRequest
+class StoreRegistrasiRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,12 +25,11 @@ class StoreAkunRequest extends FormRequest
             'nama_akun' => ['required'],
             'email' => ['required', 'email', 'unique:akuns,email'],
             'nip'   => ['required'],
-            'no_whatsapp'   => ['nullable', 'numeric'],
-            'role'   => ['required'],
-            'password'   => ['required'],
-            // 'tim_id'   => ['required'],
-            // 'jabatan_id'   => ['required'],
-            // 'divisi_id'   => ['required'],
+            'no_whatsapp'   => ['required', 'numeric'],
+            'password'   => ['required', 'confirmed', 'min:6'],
+            'password_confirmation' => ['required'],
+            'jabatan_id'   => ['required'],
+            'divisi_id'   => ['required'],
         ];
     }
 
@@ -42,12 +41,14 @@ class StoreAkunRequest extends FormRequest
             'email.email'   => 'Harus menggunakan email valid. Contoh: contoh@gmail.com',
             'email.unique'  => 'Email sudah digunakan. Silahkan gunakan email yang lain.',
             'nip.required' => 'NIP akun wajib diisi!',
+            'no_whatsapp.required' => 'No Whatsapp akun wajib diisi!',
             'no_whatsapp.numeric' => 'No Whatsapp harus berupa angka!',
-            'role.required' => 'Role wajib diisi!',
             'password.required' => 'Password wajib diisi!',
-            // 'tim_id.required' => 'Tim wajib diisi!',
-            // 'jabatan_id.required' => 'Tim wajib diisi!',
-            // 'divisi_id.required' => 'Tim wajib diisi!',
+            'password.confirmed' => 'Password Konfirmasi Tidak Sama!',
+            'password.min' => 'Password minimal terdiri dari 6 angka!',
+            'password_confirmation.required' => 'Password Konfirmasi waajib diisi!',
+            'jabatan_id.required' => 'Jabatan wajib diisi!',
+            'divisi_id.required' => 'Divisi wajib diisi!',
         ];
     }
 }

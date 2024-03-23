@@ -1,10 +1,10 @@
-<header class="navbar navbar-expand-md d-print-none">
+<header class="navbar navbar-expand-md d-print-none" data-bs-theme="dark">
     <div class="container-xl">
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-menu"
             aria-controls="navbar-menu" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
-        <h1 class="navbar-brand navbar-brand-autodark d-none-navbar-horizontal pe-0 pe-md-3">
+        <h1 class="navbar-brand navbar-brand-autodarkkkkk d-none-navbar-horizontal pe-0 pe-md-3">
             <a href="." class="d-flex text-decoration-none">
                 <img src="https://kb-sla.wika.co.id/uploads/images/system/2024-01/logo-it-div-stroke-putih-tipis.png"
                     width="110" height="32" alt="Helpdesk" class="navbar-brand-image">
@@ -178,8 +178,8 @@
                         <a href="./settings.html" class="dropdown-item">Settings</a>
                         <a href="/logout" class="dropdown-item">Logout</a>
                     </div>
+                </div>
             @endif
         </div>
-    </div>
     </div>
 </header>

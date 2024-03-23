@@ -340,44 +340,48 @@
             $('#chat-messages').append(loaderType)
 
 
-            $.ajax('http://localhost:3030/tes', {
+            var knowledgebase = <?= $knowledgebase ?>
+
+            // $.ajax('http://localhost:3030/tes', {
+            $.ajax('https://open-ai-deploy.vercel.app/tes', {
                 type: 'POST',
                 contentType: 'application/json', // Set content type to JSON
                 data: JSON.stringify({
                     "questions": messageContent,
-                    "knowledgebase": [{
-                            "id": 1,
-                            "knowledgebase": "Hai, saya adalah ROBOT HELPDESK yang akan membantu kamu jika mengalami permasalahan yang perlu ditangani oleh TIM IT."
-                        },
-                        {
-                            "id": 6,
-                            "knowledgebase": "jika terdapat jawaban yang mengarah pada suatu link https, bungkus link tersebut dengan tag a href html. contoh <a href='letakan link disini'>nama link </a>"
-                        },
-                        {
-                            "id": 2,
-                            "knowledgebase": "Tahapan untuk mengatasi lupa password pada website Wzone: 1. Mengunjungi wzone 2. Klik tombol lupa password 3. Mengisi email. 4. Link reset password akan dikirimkan ke email anda. 5. Cek email ada secara berkala. 6. Klik link yang dikirimkan via email. 7. Masukan password baru untuk mereset password."
-                        },
-                        {
-                            "id": 3,
-                            "knowledgebase": "jika pertanyaan bukan merujuk untuk nanya, jawablah dengan ramah, dan jika pertanyaan berada diluar konteks dari data yang diberikan, berikan pesan 'Pertanyaan anda diluar konteks HELPDESK, silahkan mengajukan tiket jika dirasa perlu dijawab oleh TIM IT' serta berikan juga tombol link html yang mengarah pada link https://sla/create-ticket"
-                        },
-                        {
-                            "id": 4,
-                            "knowledgebase": "bersikaplah dengan ramah."
-                        },
-                        {
-                            "id": 5,
-                            "knowledgebase": "Divisi IT adalah divisi yang menaungi 2 departemen, yaitu departemen Sistem Informasi dan Departemen ERP (Enterprise Resource Planning). Divisi IT ini baru di dirikan pada awal januari 2023"
-                        }
+                    "knowledgebase": knowledgebase
+                    // "knowledgebase": [{
+                    //         "id": 1,
+                    //         "knowledgebase": "Hai, saya adalah ROBOT HELPDESK yang akan membantu kamu jika mengalami permasalahan yang perlu ditangani oleh TIM IT."
+                    //     },
+                    //     {
+                    //         "id": 6,
+                    //         "knowledgebase": "jika terdapat jawaban yang mengarah pada suatu link https, bungkus link tersebut dengan tag a href html. contoh <a href='letakan link disini'>nama link </a>"
+                    //     },
+                    //     {
+                    //         "id": 2,
+                    //         "knowledgebase": "Tahapan untuk mengatasi lupa password pada website Wzone: 1. Mengunjungi wzone 2. Klik tombol lupa password 3. Mengisi email. 4. Link reset password akan dikirimkan ke email anda. 5. Cek email ada secara berkala. 6. Klik link yang dikirimkan via email. 7. Masukan password baru untuk mereset password."
+                    //     },
+                    //     {
+                    //         "id": 3,
+                    //         "knowledgebase": "jika pertanyaan bukan merujuk untuk nanya, jawablah dengan ramah, dan jika pertanyaan berada diluar konteks dari data yang diberikan, berikan pesan 'Pertanyaan anda diluar konteks HELPDESK, silahkan mengajukan tiket jika dirasa perlu dijawab oleh TIM IT' serta berikan juga tombol link html yang mengarah pada link https://sla/create-ticket"
+                    //     },
+                    //     {
+                    //         "id": 4,
+                    //         "knowledgebase": "bersikaplah dengan ramah."
+                    //     },
+                    //     {
+                    //         "id": 5,
+                    //         "knowledgebase": "Divisi IT adalah divisi yang menaungi 2 departemen, yaitu departemen Sistem Informasi dan Departemen ERP (Enterprise Resource Planning). Divisi IT ini baru di dirikan pada awal januari 2023"
+                    //     }
 
-                    ]
+                    // ]
                 }),
                 success: function(response) {
-                    console.log(response.answer);
                     $('#send-icon').removeClass('d-none');
                     $('#loading-icon').addClass('d-none');
                     $('#message-input').removeAttr('disabled')
                     $('#type').remove()
+                    var randomId = Math.floor(Math.random() * 1000) + 1;
                     var answer = $(`
                         <div class="chat-item">
                             <div class="row align-items-end">
@@ -392,7 +396,7 @@
                                             </div>
                                         </div>
                                         <div class="chat-bubble-body">
-                                            <p>${response.answer}</p>
+                                            <p class="typing-animation" id="` + randomId + `"></p>
                                         </div>
                                     </div>
                                 </div>
@@ -400,6 +404,8 @@
                         </div>
                     `);
                     $('#chat-messages').append(answer);
+                    typingAnimation(response.answer, $('.typing-animation'));
+                    $('#' + randomId).removeClass('typing-animation')
                     // $('#paste-answer').html(response.answer);
                 },
                 error: function() {
@@ -410,5 +416,20 @@
         // sendButton.addEventListener('click', function() {
         //     alert('ksjdf');
         // });
+
+        function typingAnimation(text, targetElement) {
+            var index = 0;
+
+            // Menerapkan interval untuk animasi mengetik
+            var typingInterval = setInterval(function() {
+                targetElement.html(text.substring(0, index));
+                index++;
+
+                // Memberhentikan interval ketika selesai
+                if (index > text.length) {
+                    clearInterval(typingInterval);
+                }
+            }, 50); // Sesuaikan kecepatan mengetik sesuai keinginan
+        }
     </script>
 @endsection

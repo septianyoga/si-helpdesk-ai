@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('no_whatsapp')->nullable();
             $table->enum('role', ['Admin', 'Agent', 'General Manager', 'User']);
             $table->enum('current_role', ['Admin', 'Agent', 'General Manager', 'User'])->nullable();
-            $table->integer('tim_id')->index()->nullable();
+            // $table->integer('tim_id')->index()->nullable();
             $table->integer('is_active')->default(1);
             $table->rememberToken();
             $table->timestamps();

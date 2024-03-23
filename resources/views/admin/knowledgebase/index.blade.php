@@ -61,7 +61,7 @@
                                         <td class="text-center">
                                             <a href="#"
                                                 onclick="handleDelete('{{ $kb->id }}', '{{ $kb->isi_kb }}')"
-                                                class="btn btn-danger btn-icon" data-bs-toggle="modal"
+                                                class="btn btn-danger btn-icon m-1" data-bs-toggle="modal"
                                                 data-bs-target="#modal-danger" title="Hapus">
                                                 <svg xmlns="http://www.w3.org/2000/svg"
                                                     class="icon icon-tabler icon-tabler-trash-x" width="24"
@@ -75,7 +75,8 @@
                                                     <path d="M10 12l4 4m0 -4l-4 4" />
                                                 </svg>
                                             </a>
-                                            <a href="/kb/{{ $kb->id }}" class="btn btn-info btn-icon" title="Edit">
+                                            <a href="/kb/{{ $kb->id }}" class="btn btn-info btn-icon m-1"
+                                                title="Edit">
                                                 <svg xmlns="http://www.w3.org/2000/svg"
                                                     class="icon icon-tabler icon-tabler-edit" width="24" height="24"
                                                     viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"

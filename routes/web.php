@@ -9,6 +9,8 @@ use App\Http\Controllers\KategoriPermasalahanController;
 use App\Http\Controllers\KnowledgebaseController;
 use App\Http\Controllers\LandingpageController;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\RegistrasiController;
+use App\Http\Controllers\TiketController;
 use App\Http\Controllers\TimController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -28,14 +30,25 @@ Route::get('/', [LandingpageController::class, 'index']);
 
 Route::get('/tanya_ai', [LandingpageController::class, 'ask_ai']);
 
+Route::get('/buat_tiket', [TiketController::class, 'buatTiket'])->name('buat_tiket');
+Route::post('/buat_tiket', [TiketController::class, 'kirimTiket']);
+Route::get('/cek_tiket', [TiketController::class, 'cekTiket'])->name('cek_tiket');
+Route::post('/cek_tiket', [TiketController::class, 'prosesCekTiket']);
+Route::get('/detail_tiket', [TiketController::class, 'detailTiket'])->name('detail_tiket');
+Route::get('/logout_cek_tiket', [TiketController::class, 'logoutCekTiket'])->name('logout_cek_tiket');
+Route::get('/download/{nama_lampiran}', [TiketController::class, 'downloadLampiran'])->name('download');
+
 Route::middleware('guest')->group(function () {
     Route::get('/login', [LoginController::class, 'index'])->name('login');
     Route::post('/login', [LoginController::class, 'store']);
+    Route::get('/registrasi', [RegistrasiController::class, 'index'])->name('registrasi');
+    Route::post('/registrasi', [RegistrasiController::class, 'store']);
 });
-Route::middleware('auth')->group(function () {
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-    Route::group(['middleware' => 'userAkses:Admin'], function () {
+Route::middleware('auth')->group(function () {
+
+    Route::group(['middleware' => 'userAkses:Admin,Agent,General Manager'], function () {
+        Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
         Route::get('/akun', [AkunController::class, 'index'])->name('akun');
         Route::post('/akun', [AkunController::class, 'store']);
         Route::delete('/akun', [AkunController::class, 'destroy']);
@@ -78,5 +91,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/kategori_masalah/{id}', [KategoriPermasalahanController::class, 'edit']);
         Route::patch('/kategori_masalah/{id}', [KategoriPermasalahanController::class, 'update']);
     });
+
+    Route::get('/tiket', [TiketController::class, 'index'])->name('tiket');
 });
 Route::get('/logout', [LoginController::class, 'destroy']);

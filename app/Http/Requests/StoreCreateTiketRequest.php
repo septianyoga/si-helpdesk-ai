@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateAkunRequest extends FormRequest
+class StoreCreateTiketRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,24 +22,26 @@ class UpdateAkunRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'nama_akun' => ['required'],
-            'email' => ['required', 'email', 'unique:akuns,email,' . $this->id],
-            'nip'   => ['required'],
-            'no_whatsapp'   => ['nullable', 'numeric'],
-            'role'   => ['required'],
+            //
+            'email' => ['required', 'email'],
+            'nip' => ['required'],
+            'kategori_permasalahan_id' => ['required'],
+            'dampak_permasalahan_id' => ['required'],
+            'ringkasan_masalah' => ['required'],
+            'tipe' => ['required'],
         ];
     }
 
     public function messages(): array
     {
         return [
-            'nama_akun.required' => 'Nama akun wajib diisi!',
             'email.required' => 'Email wajib diisi!',
             'email.email'   => 'Harus menggunakan email valid. Contoh: contoh@gmail.com',
-            'email.unique'  => 'Email sudah digunakan. Silahkan gunakan email yang lain.',
             'nip.required' => 'NIP akun wajib diisi!',
-            'no_whatsapp.numeric' => 'No Whatsapp wajib diisi!',
-            'role.required' => 'Role wajib diisi!',
+            'kategori_permasalahan_id.required' => 'Kategori Permasalahan wajib diisi!',
+            'dampak_permasalahan_id.required' => 'Dampak Permasalahan wajib diisi!',
+            'ringkasan_masalah.required' => 'Ringkasan Masalah wajib diisi!',
+            'tipe.required' => 'Tipe wajib diisi!',
         ];
     }
 }

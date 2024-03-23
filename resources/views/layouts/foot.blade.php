@@ -21,24 +21,15 @@
         }
     });
 </script>
-{{-- <script src="{{ asset('template/back/dist/libs/list.js/dist/list.min.js?1692870487') }}" defer></script> --}}
-{{-- <script>
-    document.addEventListener("DOMContentLoaded", function() {
-        const list = new List('table-default', {
-            sortClass: 'table-sort',
-            listClass: 'table-tbody',
-            searchClass: 'table-search',
-            valueNames: ['sort-name', 'sort-type', 'sort-city', 'sort-score',
-                {
-                    attr: 'data-date',
-                    name: 'sort-date'
-                },
-                {
-                    attr: 'data-progress',
-                    name: 'sort-progress'
-                },
-                'sort-quantity'
-            ]
+<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.js"></script>
+<script src="https://adminlte.io/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('#summernote').summernote({
+            height: 120
         });
-    })
-</script> --}}
+        $('#summernote2').summernote({
+            toolbar: false,
+        });
+    });
+</script>

@@ -11,11 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('kategori_permasalahans', function (Blueprint $table) {
+        Schema::create('lampirans', function (Blueprint $table) {
             $table->id();
-            $table->string('nama_topik');
-            $table->unsignedBigInteger('tim_id')->nullable()->references('id')->on('tims')->onDelete('set null');
-            $table->foreign('tim_id')->references('id')->on('tims')->onDelete('set null');
+            $table->string('nama_lampiran');
+            $table->unsignedBigInteger('respon_id')->nullable()->references('id')->on('respons')->onDelete('set null');
+            $table->foreign('respon_id')->references('id')->on('respons')->onDelete('set null');
             $table->timestamps();
         });
     }
@@ -25,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('kategori_permasalahans');
+        Schema::dropIfExists('lampirans');
     }
 };

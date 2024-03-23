@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
 class UserAkses
@@ -17,6 +18,9 @@ class UserAkses
     {
         if (in_array(auth()->user()->role, $roles)) {
             return $next($request);
+        }
+        if (Auth::user()->role == 'User') {
+            return redirect()->to('/');
         }
         notify()->warning('Anda tidak diperbolehkan mengakses halaman ini!');
         return redirect()->to('/dashboard');
