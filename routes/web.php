@@ -37,6 +37,7 @@ Route::post('/cek_tiket', [TiketController::class, 'prosesCekTiket']);
 Route::get('/detail_tiket', [TiketController::class, 'detailTiket'])->name('detail_tiket');
 Route::get('/logout_cek_tiket', [TiketController::class, 'logoutCekTiket'])->name('logout_cek_tiket');
 Route::get('/download/{nama_lampiran}', [TiketController::class, 'downloadLampiran'])->name('download');
+Route::post('/balas_tiket/{id}', [TiketController::class, 'balasTiket']);
 
 Route::middleware('guest')->group(function () {
     Route::get('/login', [LoginController::class, 'index'])->name('login');
@@ -46,9 +47,9 @@ Route::middleware('guest')->group(function () {
 });
 
 Route::middleware('auth')->group(function () {
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-    Route::group(['middleware' => 'userAkses:Admin,Agent,General Manager'], function () {
-        Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::group(['middleware' => 'userAkses:Admin'], function () {
         Route::get('/akun', [AkunController::class, 'index'])->name('akun');
         Route::post('/akun', [AkunController::class, 'store']);
         Route::delete('/akun', [AkunController::class, 'destroy']);
@@ -91,7 +92,10 @@ Route::middleware('auth')->group(function () {
         Route::get('/kategori_masalah/{id}', [KategoriPermasalahanController::class, 'edit']);
         Route::patch('/kategori_masalah/{id}', [KategoriPermasalahanController::class, 'update']);
     });
-
-    Route::get('/tiket', [TiketController::class, 'index'])->name('tiket');
+    Route::group(['middleware' => 'userAkses:Agent'], function () {
+        Route::get('/tiket', [TiketController::class, 'index'])->name('tiket');
+        Route::get('/tiket/{id}', [TiketController::class, 'edit'])->name('tiket');
+        Route::patch('/jawab_tiket/{id}', [TiketController::class, 'update']);
+    });
 });
 Route::get('/logout', [LoginController::class, 'destroy']);

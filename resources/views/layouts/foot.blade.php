@@ -21,15 +21,11 @@
         }
     });
 </script>
-<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.js"></script>
-<script src="https://adminlte.io/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
 <script>
     $(document).ready(function() {
         $('#summernote').summernote({
             height: 120
-        });
-        $('#summernote2').summernote({
-            toolbar: false,
         });
     });
 </script>

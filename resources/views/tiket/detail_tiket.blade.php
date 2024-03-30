@@ -1,5 +1,5 @@
-@extends('layouts_front.main')
-@section('content_front')
+@extends('layouts.main')
+@section('content')
     <div class="page-header d-print-none">
         <div class="container-xl">
             <div class="row g-2 align-items-center">
@@ -76,6 +76,7 @@
                                 </div>
                             </div>
                             <b>Respon</b>
+                            {{-- <ul class="steps steps-counter steps-vertical"> --}}
                             @foreach ($tiket->respon as $key => $respons)
                                 {{-- card agent --}}
                                 @if ($respons->action_by)
@@ -110,7 +111,7 @@
                                         <div class="card w-100">
                                             <div class="card-header bg-cyan-lt py-2 border d-flex align-items-center ">
                                                 <h3 class="card-title fw-bold ">{{ $tiket->akun->nama_akun }} </h3>
-                                                <p class="my-0 ms-3">{{ $key == 0 ? 'dibuat' : 'dibalas' }} pada
+                                                <p class="my-0 ms-3">{{ $key == 0 ? 'dibuat' : 'dibalas' }}
                                                     {{ date('d/m/Y H:i:s', strtotime($tiket->created_at)) }}
                                                 </p>
                                             </div>
@@ -126,14 +127,17 @@
                                         </div>
                                     </div>
                                 @endif
+                                {{-- <li class="step-item">Step one</li> --}}
                             @endforeach
+                            {{-- </ul> --}}
                         </div>
                         <div class="card-body">
-                            <form method="post" class="row" action="/balas_tiket/{{ $tiket->id }}"
+                            <form method="post" class="row" action="/jawab_tiket/{{ $tiket->id }}"
                                 enctype="multipart/form-data">
                                 @csrf
+                                @method('patch')
                                 <div class="mb-3">
-                                    <label class="form-label required">Balas Tiket</label>
+                                    <label class="form-label required">Jawab Tiket</label>
                                     <textarea name="pesan" class="@error('pesan') is-invalid @enderror" id="summernote" cols="30" rows="10"></textarea>
                                     @error('pesan')
                                         <div class="invalid-feedback">{{ $message }}</div>
@@ -143,8 +147,18 @@
                                     <label class="form-label">Lampiran</label>
                                     <input type="file" name="lampiran[]" class="form-control" multiple />
                                 </div>
-                                <div class="mb-3 d-flex justify-content-end  ">
-                                    <button type="submit" class="btn btn-primary">Balas</button>
+                                <div class="mb-3 d-flex justify-content-between ">
+                                    <a href="/tiket" class="btn btn-link">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                            stroke-linecap="round" stroke-linejoin="round"
+                                            class="icon icon-tabler icons-tabler-outline icon-tabler-chevrons-left">
+                                            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                            <path d="M11 7l-5 5l5 5" />
+                                            <path d="M17 7l-5 5l5 5" />
+                                        </svg>
+                                        Kembali</a>
+                                    <button type="submit" class="btn btn-primary">Kirim</button>
                                 </div>
                             </form>
                         </div>

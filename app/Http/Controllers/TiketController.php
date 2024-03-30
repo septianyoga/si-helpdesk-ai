@@ -27,8 +27,11 @@ class TiketController extends Controller
     public function index()
     {
         //
+        // return Tiket::orderBy('created_at', 'desc')->with(['akun', 'penjawab', 'dampak_permasalahan', 'kategori_permasalahan.tim'])->get();
+        // dd(Tiket::orderBy('created_at', 'desc')->with(['akun', 'penjawab', 'dampak_permasalahan', 'kategori_permasalahan.tim'])->get());
         return view('tiket.index', [
-            'title' => 'Tiket'
+            'title' => 'Tiket',
+            'tikets'    => Tiket::orderBy('created_at', 'desc')->with(['akun', 'penjawab', 'dampak_permasalahan', 'kategori_permasalahan.tim'])->get()
         ]);
     }
 
@@ -59,17 +62,73 @@ class TiketController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Tiket $tiket)
+    public function edit(Tiket $tiket, string $id)
     {
         //
+        // $tiket = Tiket::with([
+        //     'akun.jabatan',
+        //     'akun.divisi',
+        //     'kategori_permasalahan.tim',
+        //     'dampak_permasalahan',
+        //     'respon' => function ($query) {
+        //         $query->orderBy('created_at', 'asc'); // Mengurutkan respon dari yang terbaru ke yang terlama
+        //     },
+        //     'respon.lampiran'
+        // ])->where('id', $id)->first();
+        // $sql = $query->toSql();
+        // dd($sql);
+        // return $tiket;
+        return view('tiket.detail_tiket', [
+            'title' => 'Detail Tiket',
+            'tiket' => Tiket::with([
+                'akun.jabatan',
+                'akun.divisi',
+                'kategori_permasalahan.tim',
+                'dampak_permasalahan',
+                'respon.lampiran',
+                'penjawab'
+            ])->where('id', $id)->first()
+        ]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateTiketRequest $request, Tiket $tiket)
+    public function update(UpdateTiketRequest $request, Tiket $tiket, string $id)
     {
         //
+        $cek = Tiket::findOrFail($id);
+        $cek->update([
+            'penjawab_id'   => Auth::user()->id
+        ]);
+
+        $chat_id = mt_rand(1, 999999);
+        Respon::create([
+            'id'        => $chat_id,
+            'pesan'     => $request->pesan,
+            'tipe'      => 'Chat',
+            'action_by' => Auth::user()->id,
+            'tiket_id'  => $id
+        ]);
+        if ($request->lampiran) {
+            // insert multiple attachment
+            foreach ($request->lampiran as $file) {
+                $fileName = $file->getClientOriginalName();
+                $filePath = public_path('lampiran') . '/' . $fileName;
+
+                // handle file with same name
+                if (file_exists($filePath)) {
+                    $fileName = $file->getClientOriginalName() . '(1).' . $file->getClientOriginalExtension();
+                }
+                $filePath = $file->move(public_path('lampiran'), $fileName);
+                Lampiran::create([
+                    'nama_lampiran' => $fileName,
+                    'respon_id' => $chat_id
+                ]);
+            }
+        }
+        notify()->success('Jawab Tiket Berhasil!');
+        return redirect()->to('tiket/' . $id);
     }
 
     /**
@@ -173,7 +232,14 @@ class TiketController extends Controller
             return redirect()->back();
         }
 
-        $tiket = Tiket::with(['akun.jabatan', 'akun.divisi', 'kategori_permasalahan.tim', 'dampak_permasalahan', 'respon.lampiran'])->where('id', Session::get('tiket_id'))->first();
+        $tiket = Tiket::with([
+            'akun.jabatan',
+            'akun.divisi',
+            'kategori_permasalahan.tim',
+            'dampak_permasalahan',
+            'respon.lampiran',
+            'penjawab'
+        ])->where('id', Session::get('tiket_id'))->first();
 
         return view('user.tiket.detail_tiket', [
             'title' => 'Detail Tiket',
@@ -192,5 +258,37 @@ class TiketController extends Controller
         $lampiran = Lampiran::where('nama_lampiran', $nama_lampiran)->first();
         $file = public_path() . "/lampiran/$lampiran->nama_lampiran";
         return Response::download($file);
+    }
+
+    public function balasTiket(UpdateTiketRequest $request, string $id)
+    {
+        Tiket::findOrFail($id);
+
+        $chat_id = mt_rand(1, 999999);
+        Respon::create([
+            'id'        => $chat_id,
+            'pesan'     => $request->pesan,
+            'tipe'      => 'Chat',
+            'tiket_id'  => $id
+        ]);
+        if ($request->lampiran) {
+            // insert multiple attachment
+            foreach ($request->lampiran as $file) {
+                $fileName = $file->getClientOriginalName();
+                $filePath = public_path('lampiran') . '/' . $fileName;
+
+                // handle file with same name
+                if (file_exists($filePath)) {
+                    $fileName = $file->getClientOriginalName() . '(1).' . $file->getClientOriginalExtension();
+                }
+                $filePath = $file->move(public_path('lampiran'), $fileName);
+                Lampiran::create([
+                    'nama_lampiran' => $fileName,
+                    'respon_id' => $chat_id
+                ]);
+            }
+        }
+        notify()->success('Balas Tiket Berhasil!');
+        return redirect()->to('detail_tiket');
     }
 }

@@ -30,6 +30,11 @@ class Tiket extends Model
         return $this->belongsTo(Akun::class);
     }
 
+    public function penjawab(): BelongsTo
+    {
+        return $this->belongsTo(Akun::class, 'penjawab_id');
+    }
+
     public function kategori_permasalahan(): BelongsTo
     {
         return $this->belongsTo(KategoriPermasalahan::class);
@@ -42,6 +47,6 @@ class Tiket extends Model
 
     public function respon(): HasMany
     {
-        return $this->hasMany(Respon::class);
+        return $this->hasMany(Respon::class)->orderBy('created_at', 'asc');
     }
 }
