@@ -6,10 +6,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Tiket extends Model
 {
     use HasFactory;
+    use SoftDeletes;
 
     protected $primaryKey = 'id';
 
@@ -23,6 +25,10 @@ class Tiket extends Model
         'kategori_permasalahan_id',
         'dampak_permasalahan_id',
         'penjawab_id',
+    ];
+
+    protected $casts = [
+        'deleted_at' => 'datetime',
     ];
 
     public function akun(): BelongsTo

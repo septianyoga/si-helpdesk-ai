@@ -74,7 +74,21 @@
                                         <td>{{ $tiket->penjawab?->nama_akun }}</td>
                                         <td>{{ $tiket->status }}</td>
                                         <td>{{ $tiket->kategori_permasalahan->tim->nama_tim }}</td>
-                                        <td>
+                                        <td class="text-center">
+                                            @if (!$tiket->penjawab_id)
+                                                <button onclick="handleAlih({{ $tiket->id }})"
+                                                    class="btn btn-sm btn-icon btn-azure" title="Alihkan Tiket"
+                                                    data-bs-toggle="modal" data-bs-target="#modal-alih">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                                        viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                                        class="icon icon-tabler icons-tabler-outline icon-tabler-share-3">
+                                                        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                                        <path
+                                                            d="M13 4v4c-6.575 1.028 -9.02 6.788 -10 12c-.037 .206 5.384 -5.962 10 -6v4l8 -7l-8 -7z" />
+                                                    </svg>
+                                                </button>
+                                            @endif
                                             <a href="#"
                                                 onclick="handleDelete('{{ $tiket->id }}', '{{ $tiket->id }}')"
                                                 class="btn btn-danger btn-icon btn-sm" data-bs-toggle="modal"
@@ -126,7 +140,7 @@
                         ?
                     </div>
                 </div>
-                <form action="/divisi" method="POST">
+                <form action="/tiket" method="POST">
                     @csrf
                     @method('delete')
                     <input type="hidden" name="id" id="id_delete">
@@ -137,7 +151,61 @@
                                         Batal
                                     </a></div>
                                 <div class="col">
-                                    <button type="submit" class="btn btn-danger w-100" data-bs-dismiss="modal">Ya</button>
+                                    <button type="submit" class="btn btn-danger w-100"
+                                        data-bs-dismiss="modal">Ya</button>
+                                    {{-- <a href="#" class="btn btn-danger w-100" data-bs-dismiss="modal">
+                                        Hapus
+                                    </a> --}}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    {{-- modal alih --}}
+    <div class="modal modal-blur fade" id="modal-alih" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <div class="modal-status bg-azure"></div>
+                <div class="modal-body text-center py-4 ">
+                    <!-- Download SVG icon from http://tabler-icons.io/i/alert-triangle -->
+                    <div class="d-flex justify-content-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                            stroke-linejoin="round"
+                            class="icon icon-tabler icons-tabler-outline icon-tabler-share-3 mb-2 text-azure icon-lg">
+                            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                            <path d="M13 4v4c-6.575 1.028 -9.02 6.788 -10 12c-.037 .206 5.384 -5.962 10 -6v4l8 -7l-8 -7z" />
+                        </svg>
+                    </div>
+                    <h3>Mengalihkan Tiket</h3>
+                    <div class="text-secondary">Pilih Agent untuk Alihkan Tiket #<span class="fw-bolder"
+                            id="tiket"></span>
+                        !
+                    </div>
+                </div>
+                <form action="/tiket/alih" method="POST">
+                    @csrf
+                    <input type="hidden" name="id" id="tiket_id">
+                    <div class="modal-footer">
+                        <div class="w-100">
+                            <select type="text" name="agent_id" class="form-select mb-3" placeholder="Pilih Agent"
+                                id="select-tags" value="">
+                                <option value="" hidden>Pilih Agent</option>
+                                @foreach ($agents as $agent)
+                                    <option value="{{ $agent->id }}">{{ $agent->nama_akun }}</option>
+                                @endforeach
+                            </select>
+                            <div class="row">
+                                <div class="col"><a href="#" class="btn w-100" data-bs-dismiss="modal">
+                                        Batal
+                                    </a></div>
+                                <div class="col">
+                                    <button type="submit" class="btn btn-azure w-100"
+                                        data-bs-dismiss="modal">Ya</button>
                                     {{-- <a href="#" class="btn btn-danger w-100" data-bs-dismiss="modal">
                                         Hapus
                                     </a> --}}
@@ -150,135 +218,6 @@
         </div>
     </div>
     {{-- modal tambah --}}
-    {{-- <div class="modal modal-blur fade" id="modal-tambah" tabindex="-1" role="dialog" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Tambah Tiket</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <form action="/akun" method="POST">
-                    @csrf
-                    <div class="modal-body">
-                        <div class="row mb-3 align-items-end">
-                            <div class="col">
-                                <div class="mb-3">
-                                    <label class="form-label required">Nama Tiket</label>
-                                    <input type="text" class="form-control @error('nama_akun') is-invalid @enderror"
-                                        name="nama_akun" placeholder="Masukan Nama Tiket" value="{{ old('nama_akun') }}">
-                                    @error('nama_akun')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label required">Email</label>
-                                    <input type="text" class="form-control @error('email') is-invalid @enderror"
-                                        name="email" placeholder="Masukan Email">
-                                    @error('email')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label required">NIP</label>
-                                    <input type="text" class="form-control @error('nip') is-invalid @enderror"
-                                        name="nip" placeholder="Masukan NIP" value="{{ old('nip') }}">
-                                    @error('nip')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label">No WhatsApp</label>
-                                    <input type="number" class="form-control @error('no_whatsapp') is-invalid @enderror"
-                                        name="no_whatsapp" placeholder="Masukan No WhatsApp"
-                                        value="{{ old('no_whatsapp') }}">
-                                    @error('no_whatsapp')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label required">Role</label>
-                                    <select type="text" class="form-select @error('role') is-invalid @enderror"
-                                        id="select-users" name="role">
-                                        <option value="" hidden>-- Pilih --</option>
-                                        <option value="Admin" {{ old('role') == 'Admin' ? 'selected' : '' }}>Admin
-                                        </option>
-                                        <option value="Agent" {{ old('role') == 'Agent' ? 'selected' : '' }}>Agent
-                                        </option>
-                                        <option value="General Manager"
-                                            {{ old('role') == 'General Manager' ? 'selected' : '' }}>General Manager
-                                        </option>
-                                        <option value="User" {{ old('role') == 'User' ? 'selected' : '' }}>User</option>
-                                    </select>
-                                    @error('role')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                </div>
-                                <div>
-                                    <label class="form-label required">Password</label>
-                                    <input type="password" class="form-control @error('password') is-invalid @enderror"
-                                        name="password" placeholder="Masukan Password">
-                                    @error('password')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label ">Tim</label>
-                                    <select type="text" class="form-select @error('tim_id') is-invalid @enderror"
-                                        id="select-users" name="tim_id">
-                                        <option value="" hidden>-- Pilih Tim --</option>
-                                        @foreach ($tims as $tim)
-                                            <option value="{{ $tim->id }}"
-                                                {{ old('tim_id') == $tim->id ? 'selected' : '' }}>{{ $tim->nama_tim }}
-                                            </option>
-                                        @endforeach
-                                    </select>
-                                    @error('role')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label ">Jabatan</label>
-                                    <select type="text" class="form-select @error('jabatan_id') is-invalid @enderror"
-                                        id="select-users" name="jabatan_id">
-                                        <option value="" hidden>-- Pilih Jabatan --</option>
-                                        @foreach ($jabatans as $jabatan)
-                                            <option value="{{ $jabatan->id }}"
-                                                {{ old('jabatan_id') == $jabatan->id ? 'selected' : '' }}>
-                                                {{ $jabatan->nama_jabatan }}
-                                            </option>
-                                        @endforeach
-                                    </select>
-                                    @error('role')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label ">Divisi</label>
-                                    <select type="text" class="form-select @error('divisi_id') is-invalid @enderror"
-                                        id="select-users" name="divisi_id">
-                                        <option value="" hidden>-- Pilih Divisi --</option>
-                                        @foreach ($divisis as $divisi)
-                                            <option value="{{ $divisi->id }}"
-                                                {{ old('divisi_id') == $divisi->id ? 'selected' : '' }}>
-                                                {{ $divisi->nama_divisi }}
-                                            </option>
-                                        @endforeach
-                                    </select>
-                                    @error('role')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn me-auto" data-bs-dismiss="modal">Tutup</button>
-                        <button type="submit" class="btn btn-primary" data-bs-dismiss="modal">Tambah</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div> --}}
 
     @if ($errors->any())
         <script>
@@ -296,6 +235,15 @@
             pasteNama.textContent = '';
             pasteNama.textContent += nama;
             idDelete.value = id;
+        }
+
+        function handleAlih(id) {
+            var pasteNama = document.getElementById('tiket');
+            var idDelete = document.getElementById('tiket_id');
+            pasteNama.textContent = '';
+            pasteNama.textContent += id;
+            idDelete.value = id;
+
         }
     </script>
 @endsection

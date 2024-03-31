@@ -17,7 +17,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Session;
-use Illuminate\Support\Facades\Storage;
 
 class TiketController extends Controller
 {
@@ -27,12 +26,18 @@ class TiketController extends Controller
     public function index()
     {
         //
-        // return Tiket::orderBy('created_at', 'desc')->with(['akun', 'penjawab', 'dampak_permasalahan', 'kategori_permasalahan.tim'])->get();
-        // dd(Tiket::orderBy('created_at', 'desc')->with(['akun', 'penjawab', 'dampak_permasalahan', 'kategori_permasalahan.tim'])->get());
-        return view('tiket.index', [
-            'title' => 'Tiket',
-            'tikets'    => Tiket::orderBy('created_at', 'desc')->with(['akun', 'penjawab', 'dampak_permasalahan', 'kategori_permasalahan.tim'])->get()
-        ]);
+        if (Request()->c) {
+            return view('tiket.tiket_trash', [
+                'title' => 'Tiket Terhapus',
+                'tikets'    => Tiket::onlyTrashed()->orderBy('deleted_at', 'desc')->with(['akun', 'penjawab', 'dampak_permasalahan', 'kategori_permasalahan.tim'])->get()
+            ]);
+        } else {
+            return view('tiket.index', [
+                'title' => 'Tiket',
+                'tikets'    => Tiket::orderBy('created_at', 'desc')->with(['akun', 'penjawab', 'dampak_permasalahan', 'kategori_permasalahan.tim'])->get(),
+                'agents'     => Akun::where('role', 'agent')->get()
+            ]);
+        }
     }
 
     /**
@@ -65,26 +70,23 @@ class TiketController extends Controller
     public function edit(Tiket $tiket, string $id)
     {
         //
-        // $tiket = Tiket::with([
+        // return Tiket::withTrashed()->with([
         //     'akun.jabatan',
         //     'akun.divisi',
         //     'kategori_permasalahan.tim',
         //     'dampak_permasalahan',
-        //     'respon' => function ($query) {
-        //         $query->orderBy('created_at', 'asc'); // Mengurutkan respon dari yang terbaru ke yang terlama
-        //     },
-        //     'respon.lampiran'
+        //     'respon.agent',
+        //     'respon.lampiran',
+        //     'penjawab'
         // ])->where('id', $id)->first();
-        // $sql = $query->toSql();
-        // dd($sql);
-        // return $tiket;
         return view('tiket.detail_tiket', [
             'title' => 'Detail Tiket',
-            'tiket' => Tiket::with([
+            'tiket' => Tiket::withTrashed()->with([
                 'akun.jabatan',
                 'akun.divisi',
                 'kategori_permasalahan.tim',
                 'dampak_permasalahan',
+                'respon.agent',
                 'respon.lampiran',
                 'penjawab'
             ])->where('id', $id)->first()
@@ -127,6 +129,22 @@ class TiketController extends Controller
                 ]);
             }
         }
+
+
+        if ($request->status != 'Open') {
+            sleep(1);
+            Respon::create([
+                'id'        => mt_rand(1, 999999),
+                'pesan'     => $request->status,
+                'tipe'      => 'Closed',
+                'action_by' => Auth::user()->id,
+                'tiket_id'  => $id
+            ]);
+            $cek->update([
+                'status'    => $request->status
+            ]);
+        }
+
         notify()->success('Jawab Tiket Berhasil!');
         return redirect()->to('tiket/' . $id);
     }
@@ -134,17 +152,50 @@ class TiketController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Tiket $tiket)
+    public function destroy(Tiket $tiket, Request $request)
     {
         //
+        $tikets = $tiket->findOrFail($request->id);
+        $tikets->delete();
+        notify()->success('Tiket Berhasil Dihapus!');
+        return redirect()->to('tiket');
     }
+
+    public function restore(Request $request)
+    {
+        $tiket = Tiket::onlyTrashed()->findOrFail($request->id);
+        $tiket->restore();
+
+        notify()->success('Tiket Berhasil Dikembalikan!');
+        return redirect()->to('tiket?c=trashed');
+    }
+
+    public function alihTiket(Request $request)
+    {
+        $tiket = Tiket::findOrFail($request->id);
+        $tiket->update([
+            'penjawab_id'   => $request->agent_id
+        ]);
+        Respon::create([
+            'id'        => mt_rand(1, 999999),
+            'pesan'     => 'Assigned',
+            'tipe'      => 'Assigned',
+            'action_by' => Auth::user()->id,
+            'tiket_id'  => $request->id
+        ]);
+        notify()->success('Tiket Berhasil Dialihkan!');
+        return redirect()->to('tiket');
+    }
+
+    // user area
 
     public function buatTiket()
     {
         return view('user.tiket.buat_tiket', [
             'title' => 'Buat Tiket',
             'kategoris'  => KategoriPermasalahan::all(),
-            'dampaks'   => DampakPermasalahan::all()
+            'dampaks'   => DampakPermasalahan::all(),
+            'user'      => Auth::user()
         ]);
     }
 
@@ -229,7 +280,7 @@ class TiketController extends Controller
     {
         if (!Session::has('tiket_id')) {
             notify()->error('Nomor Tiket Tidak Ditemukan!');
-            return redirect()->back();
+            return redirect()->to('/');
         }
 
         $tiket = Tiket::with([
@@ -262,7 +313,7 @@ class TiketController extends Controller
 
     public function balasTiket(UpdateTiketRequest $request, string $id)
     {
-        Tiket::findOrFail($id);
+        $tiket = Tiket::findOrFail($id);
 
         $chat_id = mt_rand(1, 999999);
         Respon::create([
@@ -287,6 +338,18 @@ class TiketController extends Controller
                     'respon_id' => $chat_id
                 ]);
             }
+        }
+        if ($tiket->status != 'Open') {
+            sleep(1);
+            $tiket->update([
+                'status'    => 'Open'
+            ]);
+            Respon::create([
+                'id'        => mt_rand(1, 999999),
+                'pesan'     => 'Open',
+                'tipe'      => 'Reopened',
+                'tiket_id'  => $id
+            ]);
         }
         notify()->success('Balas Tiket Berhasil!');
         return redirect()->to('detail_tiket');

@@ -47,8 +47,10 @@ Route::middleware('guest')->group(function () {
 });
 
 Route::middleware('auth')->group(function () {
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
+    Route::group(['middleware' => 'userAkses:Admin,Agent,General Manager'], function () {
+        Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    });
     Route::group(['middleware' => 'userAkses:Admin'], function () {
         Route::get('/akun', [AkunController::class, 'index'])->name('akun');
         Route::post('/akun', [AkunController::class, 'store']);
@@ -96,6 +98,9 @@ Route::middleware('auth')->group(function () {
         Route::get('/tiket', [TiketController::class, 'index'])->name('tiket');
         Route::get('/tiket/{id}', [TiketController::class, 'edit'])->name('tiket');
         Route::patch('/jawab_tiket/{id}', [TiketController::class, 'update']);
+        Route::delete('/tiket', [TiketController::class, 'destroy']);
+        Route::delete('/tiket/restore', [TiketController::class, 'restore']);
+        Route::post('/tiket/alih', [TiketController::class, 'alihTiket']);
     });
 });
 Route::get('/logout', [LoginController::class, 'destroy']);

@@ -21,7 +21,7 @@
                         <div class="col-lg-6 col-12 mb-3">
                             <label class="form-label required">Email</label>
                             <input type="email" name="email" class="form-control @error('email') is-invalid @enderror"
-                                placeholder="Masukan Email">
+                                placeholder="Masukan Email" value="{{ $user?->email }}" {{ $user ? 'readonly' : '' }}>
                             @error('email')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -29,7 +29,7 @@
                         <div class="col-lg-6 col-12 mb-3">
                             <label class="form-label required">NIP</label>
                             <input type="text" class="form-control @error('nip') is-invalid @enderror" name="nip"
-                                placeholder="Masukan NIP / NIK">
+                                placeholder="Masukan NIP / NIK" value="{{ $user?->nip }}" {{ $user ? 'readonly' : '' }}>
                             @error('nip')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror

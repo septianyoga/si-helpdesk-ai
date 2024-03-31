@@ -20,6 +20,12 @@
         .layout-ask {
             min-height: 0% !important;
         }
+
+        .ts-dropdown,
+        .ts-dropdown.form-control,
+        .ts-dropdown.form-select {
+            z-index: 9999 !important;
+        }
     </style>
 </head>
 
