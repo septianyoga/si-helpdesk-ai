@@ -51,6 +51,7 @@ Route::middleware('auth')->group(function () {
     Route::group(['middleware' => 'userAkses:Admin,Agent,General Manager'], function () {
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     });
+
     Route::group(['middleware' => 'userAkses:Admin'], function () {
         Route::get('/akun', [AkunController::class, 'index'])->name('akun');
         Route::post('/akun', [AkunController::class, 'store']);
@@ -94,6 +95,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/kategori_masalah/{id}', [KategoriPermasalahanController::class, 'edit']);
         Route::patch('/kategori_masalah/{id}', [KategoriPermasalahanController::class, 'update']);
     });
+
     Route::group(['middleware' => 'userAkses:Agent'], function () {
         Route::get('/tiket', [TiketController::class, 'index'])->name('tiket');
         Route::get('/tiket/{id}', [TiketController::class, 'edit'])->name('tiket');
@@ -101,6 +103,17 @@ Route::middleware('auth')->group(function () {
         Route::delete('/tiket', [TiketController::class, 'destroy']);
         Route::delete('/tiket/restore', [TiketController::class, 'restore']);
         Route::post('/tiket/alih', [TiketController::class, 'alihTiket']);
+        Route::get('/tiket/{id}/cetak', [TiketController::class, 'cetak'])->name('tiket');
+    });
+
+    Route::group(['middleware' => 'userAkses:User'], function () {
+        Route::get('/tiket_user', [TiketController::class, 'tiketUser'])->name('tiket_user');
+        Route::get('/tiket_user/detail', [TiketController::class, 'detailTiket'])->name('tiket_user');
+    });
+    Route::group(['middleware' => 'userAkses:General Manager'], function () {
+        Route::get('/tiket_keluhan', [TiketController::class, 'tiketKeluhan'])->name('tiket_keluhan');
+        Route::get('/tiket_layanan', [TiketController::class, 'tiketLayanan'])->name('tiket_layanan');
+        Route::get('/agent', [TiketController::class, 'dataAgent'])->name('agent');
     });
 });
 Route::get('/logout', [LoginController::class, 'destroy']);

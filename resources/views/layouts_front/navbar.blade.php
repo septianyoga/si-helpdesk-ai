@@ -4,7 +4,7 @@
             aria-controls="navbar-menu" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
-        <h1 class="navbar-brand navbar-brand-autodark d-none-navbar-horizontal pe-0 pe-md-3 ">
+        <h1 class="navbar-brand navbar-brand-autodarkkkk d-none-navbar-horizontal pe-0 pe-md-3 ">
             <a href="." class="text-decoration-none d-flex">
                 <img src="https://kb-sla.wika.co.id/uploads/images/system/2024-01/logo-it-div-stroke-putih-tipis.png"
                     width="110" height="32" alt="Helpdesk" class="navbar-brand-image">
@@ -152,7 +152,28 @@
                             </span>
                         </a>
                     </li>
-                    @if (Session::has('tiket_id'))
+                    @if (Auth::user())
+                        <li class="nav-item">
+                            <a class="nav-link" href="/tiket_user">
+                                <span
+                                    class="nav-link-icon d-md-none d-lg-inline-block"><!-- Download SVG icon from http://tabler-icons.io/i/home -->
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                        stroke-linecap="round" stroke-linejoin="round"
+                                        class="icon icon-tabler icons-tabler-outline icon-tabler-file-certificate">
+                                        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                        <path d="M14 3v4a1 1 0 0 0 1 1h4" />
+                                        <path d="M5 8v-3a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2h-5" />
+                                        <path d="M6 14m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0" />
+                                        <path d="M4.5 17l-1.5 5l3 -1.5l3 1.5l-1.5 -5" />
+                                    </svg>
+                                </span>
+                                <span class="nav-link-title">
+                                    Tiket
+                                </span>
+                            </a>
+                        </li>
+                    @elseif (Session::has('tiket_id'))
                         <li class="nav-item">
                             <a class="nav-link" href="/detail_tiket">
                                 <span

@@ -13,6 +13,8 @@ use App\Models\DampakPermasalahan;
 use App\Models\KategoriPermasalahan;
 use App\Models\Lampiran;
 use App\Models\Respon;
+// use Barryvdh\DomPDF\PDF;
+use Barryvdh\DomPDF\Facade\Pdf as PDF;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Response;
@@ -187,6 +189,38 @@ class TiketController extends Controller
         return redirect()->to('tiket');
     }
 
+    public function cetak(string $id)
+    {
+        $tiket = Tiket::withTrashed()->with([
+            'akun.jabatan',
+            'akun.divisi',
+            'kategori_permasalahan.tim',
+            'dampak_permasalahan',
+            'respon.agent',
+            'respon.lampiran',
+            'penjawab.tim'
+        ])->where('id', $id)->first();
+
+        $css = file_get_contents(public_path() . '/template/back/dist/css/tabler.min.css');
+        $demo = file_get_contents(public_path() . '/template/back/dist/css/demo.min.css');
+        $vendors = file_get_contents(public_path() . '/template/back/dist/css/tabler-vendors.min.css');
+
+        $pdf = PDF::loadView('cetak.tiket_agent', [
+            'tiket' => $tiket,
+            'css' => $css,
+            'demo' => $demo,
+            'vendors' => $vendors,
+        ])->setPaper('A4')->setOptions([
+            'isHtml5ParserEnabled' => true,
+            'isRemoteEnabled' => true, 'isJavascriptEnabled' => true
+        ]);
+        return $pdf->download('tiket-' . $id . '.pdf');
+        // return $pdf->stream('tiket.pdf');
+        // return view('cetak.tiket_agent', [
+        //     'css' => $bootstrap5,
+        // ]);
+    }
+
     // user area
 
     public function buatTiket()
@@ -278,10 +312,19 @@ class TiketController extends Controller
 
     public function detailTiket()
     {
-        if (!Session::has('tiket_id')) {
+        // dd(Request()->tiket);
+        if (Request()->tiket) {
+            $tiket_id = Request()->tiket;
+        } else {
+            $tiket_id = Session::get('tiket_id');
+        }
+        if (!$tiket_id) {
             notify()->error('Nomor Tiket Tidak Ditemukan!');
             return redirect()->to('/');
         }
+
+        // $tiket_id = Session::get('tiket_id') || Request()->tiket;
+
 
         $tiket = Tiket::with([
             'akun.jabatan',
@@ -290,7 +333,7 @@ class TiketController extends Controller
             'dampak_permasalahan',
             'respon.lampiran',
             'penjawab'
-        ])->where('id', Session::get('tiket_id'))->first();
+        ])->findOrFail($tiket_id)->first();
 
         return view('user.tiket.detail_tiket', [
             'title' => 'Detail Tiket',
@@ -353,5 +396,40 @@ class TiketController extends Controller
         }
         notify()->success('Balas Tiket Berhasil!');
         return redirect()->to('detail_tiket');
+    }
+
+    public function tiketUser()
+    {
+        return view('user.tiket.index', [
+            'title'     => 'Tiket User',
+            'tikets'    => Tiket::orderBy('created_at', 'desc')->with(['akun', 'penjawab', 'dampak_permasalahan', 'kategori_permasalahan.tim'])->where('akun_id', Auth::user()->id)->get()
+        ]);
+    }
+
+    // General Manager AREA !
+
+    public function tiketKeluhan()
+    {
+        return view('general_manager.tiket_keluhan', [
+            'title' => 'Tiket Keluhan',
+            'tikets' => Tiket::orderBy('created_at', 'desc')->with(['akun', 'penjawab', 'dampak_permasalahan', 'kategori_permasalahan.tim'])->where('tipe', 'Insiden')->get()
+        ]);
+    }
+
+    public function tiketLayanan()
+    {
+        return view('general_manager.tiket_keluhan', [
+            'title' => 'Tiket Layanan',
+            'tikets' => Tiket::orderBy('created_at', 'desc')->with(['akun', 'penjawab', 'dampak_permasalahan', 'kategori_permasalahan.tim'])->where('tipe', 'Permintaan Layanan')->get()
+        ]);
+    }
+
+    public function dataAgent()
+    {
+        $akun = Akun::with(['tim', 'jabatan', 'divisi'])->where('role', 'Agent')->get();
+        return view('general_manager.agent', [
+            'title' => 'Data Agent',
+            'akuns'  => $akun,
+        ]);
     }
 }
