@@ -318,13 +318,11 @@ class TiketController extends Controller
         } else {
             $tiket_id = Session::get('tiket_id');
         }
+
         if (!$tiket_id) {
             notify()->error('Nomor Tiket Tidak Ditemukan!');
             return redirect()->to('/');
         }
-
-        // $tiket_id = Session::get('tiket_id') || Request()->tiket;
-
 
         $tiket = Tiket::with([
             'akun.jabatan',
@@ -333,7 +331,7 @@ class TiketController extends Controller
             'dampak_permasalahan',
             'respon.lampiran',
             'penjawab'
-        ])->findOrFail($tiket_id)->first();
+        ])->findOrFail($tiket_id);
 
         return view('user.tiket.detail_tiket', [
             'title' => 'Detail Tiket',
