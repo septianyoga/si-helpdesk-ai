@@ -88,7 +88,11 @@
                         </div>
                         <div class="col-lg-6 col-12 mb-3">
                             <label class="form-label">Lampiran</label>
-                            <input type="file" name="lampiran[]" class="form-control" multiple />
+                            <input type="file" name="lampiran"
+                                class="form-control @error('lampiran') is-invalid @enderror" multiple />
+                            @error('lampiran')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
                         <div class="mb-3">
                             <button type="submit" class="btn btn-primary">Kirim</button>

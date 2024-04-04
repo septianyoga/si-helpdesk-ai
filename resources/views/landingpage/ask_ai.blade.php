@@ -342,8 +342,8 @@
 
             var knowledgebase = <?= $knowledgebase ?>
 
-            // $.ajax('http://localhost:3030/tes', {
-            $.ajax('https://open-ai-deploy.vercel.app/tes', {
+            $.ajax('http://localhost:3030/tes', {
+                // $.ajax('https://open-ai-deploy.vercel.app/tes', {
                 type: 'POST',
                 contentType: 'application/json', // Set content type to JSON
                 data: JSON.stringify({

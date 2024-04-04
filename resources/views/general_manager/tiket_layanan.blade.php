@@ -63,7 +63,8 @@
                                         <td>{{ $tiket->status }}</td>
                                         <td>{{ $tiket->kategori_permasalahan->tim->nama_tim }}</td>
                                         <td class="text-center">
-                                            <button class="btn btn-sm btn-icon btn-success" title="Alihkan Tiket"
+                                            <button onclick="document.location.href='/cetak_tiket_layanan'"
+                                                class="btn btn-sm btn-icon btn-success" title="Alihkan Tiket"
                                                 data-bs-toggle="modal" data-bs-target="#modal-alih">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                                     viewBox="0 0 24 24" fill="none" stroke="currentColor"

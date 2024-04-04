@@ -223,7 +223,7 @@
                                                     {{ $respons->tipe }} by
                                                     <span class="avatar avatar-xs mx-1"
                                                         style="background-image: url({{ asset('/assets/img/avatar.png') }})"></span>
-                                                    {{ $tiket->penjawab->nama_akun }}
+                                                    {{ $respons->action_by ? $respons->agent->nama_akun : $tiket->akun->nama_akun }}
                                                     dengan status {{ $respons->pesan }}
                                                     {{ date('d/m/Y H:i:s', strtotime($respons->created_at)) }}
                                                 @endif
@@ -319,47 +319,62 @@
                             {{-- </ul> --}}
                         </div>
                         <div class="card-body">
-                            <form method="post" class="row" action="/jawab_tiket/{{ $tiket->id }}"
-                                enctype="multipart/form-data">
-                                @csrf
-                                @method('patch')
-                                <div class="mb-3">
-                                    <label class="form-label required">Jawab Tiket</label>
-                                    <textarea name="pesan" class="@error('pesan') is-invalid @enderror" id="summernote" cols="30"
-                                        rows="10"></textarea>
-                                    @error('pesan')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                </div>
-                                <div class="col-lg-6 col-12 mb-3">
-                                    <label class="form-label">Lampiran</label>
-                                    <input type="file" name="lampiran[]" class="form-control" multiple />
-                                </div>
-                                <div class="col-lg-6 col-12 mb-3">
-                                    <label class="form-label">Balas dengan status :</label>
-                                    <select name="status" id="status" class="form-select">
-                                        <option value="Open" {{ $tiket->status == 'Open' ? 'selected' : '' }}>Open
-                                            {{ $tiket->status == 'Open' ? '(Saat ini)' : '' }}</option>
-                                        <option value="Resolved" {{ $tiket->status == 'Resolved' ? 'selected' : '' }}>
-                                            Resolved {{ $tiket->status == 'Resolved' ? '(Saat ini)' : '' }}</option>
-                                        <option value="Closed" {{ $tiket->status == 'Closed' ? 'selected' : '' }}>Closed
-                                            {{ $tiket->status == 'Closed' ? '(Saat ini)' : '' }}</option>
-                                    </select>
-                                </div>
-                                <div class="mb-3 d-flex justify-content-between ">
-                                    <a href="/tiket" class="btn btn-link">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                            stroke-linecap="round" stroke-linejoin="round"
-                                            class="icon icon-tabler icons-tabler-outline icon-tabler-chevrons-left">
-                                            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                                            <path d="M11 7l-5 5l5 5" />
-                                            <path d="M17 7l-5 5l5 5" />
-                                        </svg>
-                                        Kembali</a>
-                                    <button type="submit" class="btn btn-primary">Kirim</button>
-                                </div>
-                            </form>
+                            @if (Auth::user()->role == 'General Manager')
+                                <a href="{{ $tiket->tipe == 'Insiden' ? '/tiket_keluhan' : '/tiket_layanan' }}"
+                                    class="btn btn-link">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                        stroke-linecap="round" stroke-linejoin="round"
+                                        class="icon icon-tabler icons-tabler-outline icon-tabler-chevrons-left">
+                                        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                        <path d="M11 7l-5 5l5 5" />
+                                        <path d="M17 7l-5 5l5 5" />
+                                    </svg>
+                                    Kembali</a>
+                            @else
+                                <form method="post" class="row" action="/jawab_tiket/{{ $tiket->id }}"
+                                    enctype="multipart/form-data">
+                                    @csrf
+                                    @method('patch')
+                                    <div class="mb-3">
+                                        <label class="form-label required">Jawab Tiket</label>
+                                        <textarea name="pesan" class="@error('pesan') is-invalid @enderror" id="summernote" cols="30"
+                                            rows="10"></textarea>
+                                        @error('pesan')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                    <div class="col-lg-6 col-12 mb-3">
+                                        <label class="form-label">Lampiran</label>
+                                        <input type="file" name="lampiran[]" class="form-control" multiple />
+                                    </div>
+                                    <div class="col-lg-6 col-12 mb-3">
+                                        <label class="form-label">Balas dengan status :</label>
+                                        <select name="status" id="status" class="form-select">
+                                            <option value="Open" {{ $tiket->status == 'Open' ? 'selected' : '' }}>Open
+                                                {{ $tiket->status == 'Open' ? '(Saat ini)' : '' }}</option>
+                                            <option value="Resolved" {{ $tiket->status == 'Resolved' ? 'selected' : '' }}>
+                                                Resolved {{ $tiket->status == 'Resolved' ? '(Saat ini)' : '' }}</option>
+                                            <option value="Closed" {{ $tiket->status == 'Closed' ? 'selected' : '' }}>
+                                                Closed
+                                                {{ $tiket->status == 'Closed' ? '(Saat ini)' : '' }}</option>
+                                        </select>
+                                    </div>
+                                    <div class="mb-3 d-flex justify-content-between ">
+                                        <a href="/tiket" class="btn btn-link">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                                viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                                class="icon icon-tabler icons-tabler-outline icon-tabler-chevrons-left">
+                                                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                                <path d="M11 7l-5 5l5 5" />
+                                                <path d="M17 7l-5 5l5 5" />
+                                            </svg>
+                                            Kembali</a>
+                                        <button type="submit" class="btn btn-primary">Kirim</button>
+                                    </div>
+                                </form>
+                            @endif
                         </div>
                     </div>
                 </div>

@@ -44,30 +44,30 @@
             width="110" height="32" alt="Helpdesk" class="navbar-brand-image">
         <h5 class="title">HELPDESK IT</h5>
     </div>
-    <h1 style="font-weight: bolder">Data Agent</h1>
+    <h1 style="font-weight: bolder">Tiket Layanan</h1>
     <table class="table" border="1" cellpadding="5" cellspacing="10">
         <tr>
             <th>No</th>
-            <th>Nama Agent</th>
-            <th>Email</th>
-            <th>NIP</th>
-            <th>No WhatsApp</th>
-            <th>Tim</th>
-            <th>Jabatan</th>
-            <th>Divisi</th>
+            <th>Nomor Tiket</th>
+            <th>Subjek</th>
+            <th>Pembuat Tiket</th>
+            <th>Prioritas</th>
+            <th>Penjawab</th>
             <th>Status</th>
+            <th>Tim</th>
+            <th>Dibuat Tanggal</th>
         </tr>
-        @foreach ($agents as $agent)
+        @foreach ($tikets as $tiket)
             <tr>
                 <td>{{ $loop->iteration }}.</td>
-                <td>{{ $agent->nama_akun }}</td>
-                <td>{{ $agent->email }}</td>
-                <td>{{ $agent->nip }}</td>
-                <td>{{ $agent->no_whatsapp }}</td>
-                <td>{{ $agent->tim->nama_tim }}</td>
-                <td>{{ $agent->jabatan->nama_jabatan }}</td>
-                <td>{{ $agent->divisi->nama_divisi }}</td>
-                <td>{{ $agent->is_active ? 'Aktif' : 'Non Aktif' }}</td>
+                <td>#{{ $tiket->id }}</td>
+                <td>{{ $tiket->ringkasan_masalah }}</td>
+                <td>{{ $tiket->akun->nama_akun }}</td>
+                <td>{{ $tiket->dampak_permasalahan->prioritas }}</td>
+                <td>{{ $tiket->penjawab->nama_akun }}</td>
+                <td>{{ $tiket->status }}</td>
+                <td>{{ $tiket->kategori_permasalahan->tim->nama_tim }}</td>
+                <td>{{ date('d/m/Y H:i:s', strtotime($tiket->created_at)) }}</td>
             </tr>
         @endforeach
     </table>

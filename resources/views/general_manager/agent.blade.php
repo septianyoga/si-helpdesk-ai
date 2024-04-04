@@ -27,7 +27,6 @@
                                     <th>Email</th>
                                     <th>NIP</th>
                                     <th>No WhatsApp</th>
-                                    <th>Role</th>
                                     <th>Tim</th>
                                     <th>Jabatan</th>
                                     <th>Divisi</th>
@@ -43,13 +42,13 @@
                                         <td>{{ $akun->email }}</td>
                                         <td>{{ $akun->nip }}</td>
                                         <td>{{ $akun->no_whatsapp }}</td>
-                                        <td>{{ $akun->role }}</td>
                                         <td>{{ $akun->tim != null ? $akun->tim->nama_tim : '' }}</td>
                                         <td>{{ $akun->jabatan != null ? $akun->jabatan->nama_jabatan : '' }}</td>
                                         <td>{{ $akun->divisi != null ? $akun->divisi->nama_divisi : '' }}</td>
                                         <td>{{ $akun->is_active ? 'Aktif' : 'Non Aktif' }}</td>
                                         <td>
-                                            <button class="btn btn-sm btn-icon btn-success" title="Alihkan Tiket"
+                                            <button onclick="document.location.href='/cetak_agent'"
+                                                class="btn btn-sm btn-icon btn-success" title="Alihkan Tiket"
                                                 data-bs-toggle="modal" data-bs-target="#modal-alih">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                                     viewBox="0 0 24 24" fill="none" stroke="currentColor"

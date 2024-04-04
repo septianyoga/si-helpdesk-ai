@@ -202,7 +202,7 @@
                                                     {{ $respons->tipe }} by
                                                     <span class="avatar avatar-xs mx-1"
                                                         style="background-image: url({{ asset('/assets/img/avatar.png') }})"></span>
-                                                    {{ $tiket->penjawab->nama_akun }}
+                                                    {{ $respons->action_by ? $respons->agent->nama_akun : $tiket->akun->nama_akun }}
                                                     dengan status {{ $respons->pesan }}
                                                     {{ date('d/m/Y H:i:s', strtotime($respons->created_at)) }}
                                                 </span>
@@ -305,8 +305,14 @@
                                     @enderror
                                 </div>
                                 <div class="col-lg-6 col-12 mb-3">
-                                    <label class="form-label">Lampiran</label>
-                                    <input type="file" name="lampiran[]" class="form-control" multiple />
+                                    <label class="form-label">Lampiran <small>*Dapat lebih dari satu</small></label>
+                                    <input type="file" name="lampiran[]"
+                                        class="form-control @error('lampiran') is-invalid @enderror"
+                                        accept=".jpeg,.jpg,.png,.gif,.pdf,.xlsx,.xls,.docx,.doc,.mp4" multiple />
+                                    <small>Maks. 3MB.</small>
+                                    @error('lampiran')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
                                 </div>
                                 <div class="mb-3 d-flex justify-content-between">
                                     <div>

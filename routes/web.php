@@ -114,6 +114,12 @@ Route::middleware('auth')->group(function () {
         Route::get('/tiket_keluhan', [TiketController::class, 'tiketKeluhan'])->name('tiket_keluhan');
         Route::get('/tiket_layanan', [TiketController::class, 'tiketLayanan'])->name('tiket_layanan');
         Route::get('/agent', [TiketController::class, 'dataAgent'])->name('agent');
+        Route::get('/cetak_tiket_keluhan', [TiketController::class, 'cetakTiketKeluhan'])->name('cetak_tiket_keluhan');
+        Route::get('/cetak_tiket_layanan', [TiketController::class, 'cetakTiketLayanan'])->name('cetak_tiket_layanan');
+        Route::get('/cetak_agent', [TiketController::class, 'cetakAgent'])->name('cetak_agent');
+    });
+    Route::group(['middleware' => 'userAkses:Agent,General Manager'], function () {
+        Route::get('/tiket/{id}', [TiketController::class, 'edit'])->name('tiket');
     });
 });
 Route::get('/logout', [LoginController::class, 'destroy']);

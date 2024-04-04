@@ -354,6 +354,17 @@ class TiketController extends Controller
 
     public function balasTiket(UpdateTiketRequest $request, string $id)
     {
+        $totalSize = 0;
+        // Hitung total ukuran lampiran
+        foreach ($request->lampiran as $key => $file) {
+            $totalSize += $file->getSize();
+        }
+
+        // Validasi total ukuran lampiran
+        if ($totalSize > (3 * 1024 * 1024)) {
+            return redirect()->back()->withErrors(['lampiran' => 'Total ukuran lampiran tidak boleh melebihi 2MB.']);
+        }
+
         $tiket = Tiket::findOrFail($id);
 
         $chat_id = mt_rand(1, 999999);
@@ -392,7 +403,12 @@ class TiketController extends Controller
                 'tiket_id'  => $id
             ]);
         }
+
         notify()->success('Balas Tiket Berhasil!');
+
+        if (Auth::user()) {
+            return redirect()->to('tiket_user/detail?tiket=' . $id);
+        }
         return redirect()->to('detail_tiket');
     }
 
@@ -416,7 +432,7 @@ class TiketController extends Controller
 
     public function tiketLayanan()
     {
-        return view('general_manager.tiket_keluhan', [
+        return view('general_manager.tiket_layanan', [
             'title' => 'Tiket Layanan',
             'tikets' => Tiket::orderBy('created_at', 'desc')->with(['akun', 'penjawab', 'dampak_permasalahan', 'kategori_permasalahan.tim'])->where('tipe', 'Permintaan Layanan')->get()
         ]);
@@ -429,5 +445,68 @@ class TiketController extends Controller
             'title' => 'Data Agent',
             'akuns'  => $akun,
         ]);
+    }
+
+    public function cetakTiketKeluhan()
+    {
+        $tiket = Tiket::orderBy('created_at', 'desc')->with(['akun', 'penjawab', 'dampak_permasalahan', 'kategori_permasalahan.tim'])->where('tipe', 'Insiden')->get();
+
+        $css = file_get_contents(public_path() . '/template/back/dist/css/tabler.min.css');
+        $demo = file_get_contents(public_path() . '/template/back/dist/css/demo.min.css');
+        $vendors = file_get_contents(public_path() . '/template/back/dist/css/tabler-vendors.min.css');
+
+        $pdf = PDF::loadView('cetak.tiket_keluhan', [
+            'tikets' => $tiket,
+            'css' => $css,
+            'demo' => $demo,
+            'vendors' => $vendors,
+        ])->setPaper('A4', 'landscape')->setOptions([
+            'isHtml5ParserEnabled' => true,
+            'isRemoteEnabled' => true, 'isJavascriptEnabled' => true
+        ]);
+        return $pdf->download('tiket_keluhan-' . date('d/m/Y') . '.pdf');
+        // return $pdf->stream('tiket.pdf');
+    }
+
+    public function cetakTiketLayanan()
+    {
+        $tiket = Tiket::orderBy('created_at', 'desc')->with(['akun', 'penjawab', 'dampak_permasalahan', 'kategori_permasalahan.tim'])->where('tipe', 'Permintaan Layanan')->get();
+
+        $css = file_get_contents(public_path() . '/template/back/dist/css/tabler.min.css');
+        $demo = file_get_contents(public_path() . '/template/back/dist/css/demo.min.css');
+        $vendors = file_get_contents(public_path() . '/template/back/dist/css/tabler-vendors.min.css');
+
+        $pdf = PDF::loadView('cetak.tiket_layanan', [
+            'tikets' => $tiket,
+            'css' => $css,
+            'demo' => $demo,
+            'vendors' => $vendors,
+        ])->setPaper('A4', 'landscape')->setOptions([
+            'isHtml5ParserEnabled' => true,
+            'isRemoteEnabled' => true, 'isJavascriptEnabled' => true
+        ]);
+        return $pdf->download('tiket_layanan-' . date('d/m/Y') . '.pdf');
+        // return $pdf->stream('tiket.pdf');
+    }
+
+    public function cetakAgent()
+    {
+        $agents = Akun::with(['tim', 'jabatan', 'divisi'])->where('role', 'Agent')->get();
+
+        $css = file_get_contents(public_path() . '/template/back/dist/css/tabler.min.css');
+        $demo = file_get_contents(public_path() . '/template/back/dist/css/demo.min.css');
+        $vendors = file_get_contents(public_path() . '/template/back/dist/css/tabler-vendors.min.css');
+
+        $pdf = PDF::loadView('cetak.tiket_agent', [
+            'agents' => $agents,
+            'css' => $css,
+            'demo' => $demo,
+            'vendors' => $vendors,
+        ])->setPaper('A4', 'landscape')->setOptions([
+            'isHtml5ParserEnabled' => true,
+            'isRemoteEnabled' => true, 'isJavascriptEnabled' => true
+        ]);
+        return $pdf->download('data_agent-' . date('d/m/Y') . '.pdf');
+        // return $pdf->stream('tiket.pdf');
     }
 }

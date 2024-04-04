@@ -57,3 +57,30 @@
         }));
     });
 </script>
+
+{{-- handle nip ajax buat tiket --}}
+{{-- <script>
+    $('#nip').on('input', function() {
+        var nip = $(this).val()
+
+        if (nip.length >= 8) {
+            $.ajax({
+                url: "<?= base_url('jenis_pengaduan/search/') ?>" + pengaduan,
+                success: function(result) {
+                    result = JSON.parse(result)
+                    if (result.data) {
+                        result.data.forEach(element => {
+                            // alert(element.nama_sub)
+                            $('#sub_pengaduan').append(`<option class="subb" value="${element.id_sub}">${element.nama_sub} </option>`);
+                        });
+                        $('#sub').removeClass('d-none');
+                        $('#sub_pengaduan').attr('required');
+                    } else {
+                        $('#sub').addClass('d-none')
+
+                    }
+                }
+            })
+        }
+    })
+</script> --}}
