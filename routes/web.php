@@ -50,6 +50,7 @@ Route::middleware('auth')->group(function () {
 
     Route::group(['middleware' => 'userAkses:Admin,Agent,General Manager'], function () {
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+        Route::get('/chart-data', [DashboardController::class, 'chart'])->name('chart-data');
     });
 
     Route::group(['middleware' => 'userAkses:Admin'], function () {

@@ -47,6 +47,32 @@
     <div class="page-body">
         <div class="container-xl">
             <div class="row row-deck row-cards">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="d-flex">
+                                <h3 class="card-title">Aktivitas Tiket</h3>
+                                <div class="ms-auto">
+                                    <div class="dropdown">
+                                        <a class="dropdown-toggle text-secondary" href="#" data-bs-toggle="dropdown"
+                                            aria-haspopup="true" aria-expanded="false">Last 7 days</a>
+                                        <div class="dropdown-menu dropdown-menu-end">
+                                            <a class="dropdown-item active" href="#" onclick="getChartData(7)">Last 7
+                                                days</a>
+                                            <a class="dropdown-item" href="#" onclick="getChartData(30)">Last 30
+                                                days</a>
+                                            <a class="dropdown-item" href="#" onclick="getChartData(90)">Last 3
+                                                months</a>
+                                            <a class="dropdown-item" href="#" onclick="getChartData(365)">Last 1
+                                                year</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="chart-social-referrals"></div>
+                        </div>
+                    </div>
+                </div>
                 <div class="col-sm-6 col-lg-3">
                     <div class="card">
                         <div class="card-body">
@@ -96,8 +122,9 @@
                                 <div class="subheader">Revenue</div>
                                 <div class="ms-auto lh-1">
                                     <div class="dropdown">
-                                        <a class="dropdown-toggle text-secondary" href="#" data-bs-toggle="dropdown"
-                                            aria-haspopup="true" aria-expanded="false">Last 7 days</a>
+                                        <a class="dropdown-toggle text-secondary" href="#"
+                                            data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Last 7
+                                            days</a>
                                         <div class="dropdown-menu dropdown-menu-end">
                                             <a class="dropdown-item active" href="#">Last 7 days</a>
                                             <a class="dropdown-item" href="#">Last 30 days</a>
