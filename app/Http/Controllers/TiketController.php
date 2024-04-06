@@ -101,6 +101,20 @@ class TiketController extends Controller
     public function update(UpdateTiketRequest $request, Tiket $tiket, string $id)
     {
         //
+
+        if ($request->lampiran) {
+            $totalSize = 0;
+            // Hitung total ukuran lampiran
+            foreach ($request->lampiran as $key => $file) {
+                $totalSize += $file->getSize();
+            }
+
+            // Validasi total ukuran lampiran
+            if ($totalSize > (3 * 1024 * 1024)) {
+                return redirect()->back()->withErrors(['lampiran' => 'Total ukuran lampiran tidak boleh melebihi 3MB.']);
+            }
+        }
+
         $cek = Tiket::findOrFail($id);
         $cek->update([
             'penjawab_id'   => Auth::user()->id
@@ -354,15 +368,17 @@ class TiketController extends Controller
 
     public function balasTiket(UpdateTiketRequest $request, string $id)
     {
-        $totalSize = 0;
-        // Hitung total ukuran lampiran
-        foreach ($request->lampiran as $key => $file) {
-            $totalSize += $file->getSize();
-        }
+        if ($request->lampiran) {
+            $totalSize = 0;
+            // Hitung total ukuran lampiran
+            foreach ($request->lampiran as $key => $file) {
+                $totalSize += $file->getSize();
+            }
 
-        // Validasi total ukuran lampiran
-        if ($totalSize > (3 * 1024 * 1024)) {
-            return redirect()->back()->withErrors(['lampiran' => 'Total ukuran lampiran tidak boleh melebihi 2MB.']);
+            // Validasi total ukuran lampiran
+            if ($totalSize > (3 * 1024 * 1024)) {
+                return redirect()->back()->withErrors(['lampiran' => 'Total ukuran lampiran tidak boleh melebihi 3MB.']);
+            }
         }
 
         $tiket = Tiket::findOrFail($id);
@@ -405,6 +421,31 @@ class TiketController extends Controller
         }
 
         notify()->success('Balas Tiket Berhasil!');
+
+        if (Auth::user()) {
+            return redirect()->to('tiket_user/detail?tiket=' . $id);
+        }
+        return redirect()->to('detail_tiket');
+    }
+
+    public function closedTiket(string $id)
+    {
+        $tiket = Tiket::findOrFail($id);
+
+        $chat_id = mt_rand(1, 999999);
+
+        $tiket->update([
+            'status'    => 'Closed'
+        ]);
+
+        Respon::create([
+            'id'        => $chat_id,
+            'pesan'     => 'Closed',
+            'tipe'      => 'Closed',
+            'tiket_id'  => $id
+        ]);
+
+        notify()->success('Closed Tiket Berhasil!');
 
         if (Auth::user()) {
             return redirect()->to('tiket_user/detail?tiket=' . $id);

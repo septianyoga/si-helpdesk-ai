@@ -38,6 +38,8 @@ Route::get('/detail_tiket', [TiketController::class, 'detailTiket'])->name('deta
 Route::get('/logout_cek_tiket', [TiketController::class, 'logoutCekTiket'])->name('logout_cek_tiket');
 Route::get('/download/{nama_lampiran}', [TiketController::class, 'downloadLampiran'])->name('download');
 Route::post('/balas_tiket/{id}', [TiketController::class, 'balasTiket']);
+Route::get('/tiket_user/closed/{id}', [TiketController::class, 'closedTiket'])->name('tiket_user');
+
 
 Route::middleware('guest')->group(function () {
     Route::get('/login', [LoginController::class, 'index'])->name('login');

@@ -345,8 +345,13 @@
                                         @enderror
                                     </div>
                                     <div class="col-lg-6 col-12 mb-3">
-                                        <label class="form-label">Lampiran</label>
-                                        <input type="file" name="lampiran[]" class="form-control" multiple />
+                                        <label class="form-label">Lampiran <small>*Dapat lebih dari satu</small></label>
+                                        <input type="file" name="lampiran[]"
+                                            class="form-control @error('lampiran') is-invalid @enderror" multiple />
+                                        <small>Maks. 3MB.</small>
+                                        @error('lampiran')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
                                     </div>
                                     <div class="col-lg-6 col-12 mb-3">
                                         <label class="form-label">Balas dengan status :</label>
