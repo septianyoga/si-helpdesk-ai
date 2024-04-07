@@ -10,78 +10,55 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        // Ambil data aktivitas dengan tipe "Closed" selama seminggu terakhir
-        $activities = Respon::where('tipe', 'Closed')
-            ->whereBetween('created_at', [now()->subDays(7), now()])
-            ->get();
+        $day_ticket = Request()->days;
 
-        // Buat array untuk menyimpan jumlah aktivitas per hari
-        $activityCounts = [];
-
-        // Inisialisasi tanggal awal
-        $startDate = now()->subDays(7);
-
-        // Loop untuk menghitung jumlah aktivitas per hari
-        for ($i = 0; $i < 7; $i++) {
-            // Hitung jumlah aktivitas dengan tipe "Closed" pada tanggal tertentu
-            $count = $activities->where('created_at', '>=', $startDate)->where('created_at', '<', $startDate->copy()->addDay())->count();
-
-            // Tambahkan jumlah aktivitas ke dalam array
-            $activityCounts[] = $count;
-
-            // Geser tanggal ke hari berikutnya
-            $startDate->addDay();
+        if (!$day_ticket) {
+            $day_ticket = 7;
         }
 
-        // Buat respons JSON
-        $response = [
-            'labels' => $this->generateDateLabels(7), // Fungsi untuk menghasilkan label tanggal
-            'series' => [
-                [
-                    'name' => 'Closed',
-                    'data' => $activityCounts,
-                ]
-            ]
-        ];
-
-        // Kembalikan respons dalam format JSON
-        $chart = json_encode($response);
-
-        // echo json_encode($this->generateDateLabels(7), JSON_UNESCAPED_UNICODE);
-        // die();
-
-        // return json_encode($this->generateDateLabels(7));
-
+        $chart = $this->getTiketData($day_ticket);
         return view('dashboard.index', [
             'title' => 'Dashboard',
-            // 'chart' => $chart
-            'labels'    => json_encode($this->generateDateLabels(7), JSON_UNESCAPED_UNICODE),
-            'series'    => json_encode([
-                [
-                    'name' => 'Closed',
-                    'data' => $activityCounts,
-                ]
-            ])
+            'chart' => $chart
         ]);
     }
 
-    public function chart()
+    public function getTiketData($days)
     {
+        $data = [
+            'Closed'    => $this->getTiketClosed($days),
+            'Reopened'    => $this->getTiketReopened($days),
+            'Assigned'    => $this->getTiketAssigned($days),
+            'Overdue'    => $this->getTiketOverdue($days),
+            'Updated'    => $this->getTiketUpdated($days),
+            'label'     => $this->generateDateLabels($days)
+        ];
+
+        return $data;
+    }
+
+    public function getTiketClosed($days)
+    {
+        $today = now()->startOfDay(); // Mengambil tanggal hari ini tanpa jamnya
+        $yesterdayEnd = now()->subDay()->endOfDay(); // Mengambil akhir hari dari kemarin (pukul 23:59:59)
         // Ambil data aktivitas dengan tipe "Closed" selama seminggu terakhir
         $activities = Respon::where('tipe', 'Closed')
-            ->whereBetween('created_at', [now()->subDays(7), now()])
+            ->whereBetween('created_at', [$today->subDays($days)->startOfDay(), $yesterdayEnd])
             ->get();
+
+        // dd($activities);
 
         // Buat array untuk menyimpan jumlah aktivitas per hari
         $activityCounts = [];
 
         // Inisialisasi tanggal awal
-        $startDate = now()->subDays(7);
+        $startDate = now()->subDays($days - 1)->startOfDay(); // Mengambil tanggal awal tanpa jamnya
 
         // Loop untuk menghitung jumlah aktivitas per hari
-        for ($i = 0; $i < 7; $i++) {
-            // Hitung jumlah aktivitas dengan tipe "Closed" pada tanggal tertentu
-            $count = $activities->where('created_at', '>=', $startDate)->where('created_at', '<', $startDate->copy()->addDay())->count();
+        for ($i = 0; $i < $days; $i++) {
+            // Hitung jumlah aktivitas dengan tipe "Closed" pada rentang tanggal tertentu
+            $endDate = $startDate->copy()->endOfDay(); // Akhir hari dari tanggal tersebut (pukul 23:59:59)
+            $count = $activities->where('created_at', '>=', $startDate)->where('created_at', '<=', $endDate)->count();
 
             // Tambahkan jumlah aktivitas ke dalam array
             $activityCounts[] = $count;
@@ -91,19 +68,146 @@ class DashboardController extends Controller
         }
 
         // Buat respons JSON
-        $response = [
-            'labels' => $this->generateDateLabels(7), // Fungsi untuk menghasilkan label tanggal
-            'series' => [
-                [
-                    'name' => 'Closed',
-                    'data' => $activityCounts,
-                ]
-            ]
-        ];
-
-        // Kembalikan respons dalam format JSON
-        return response()->json($response);
+        return $activityCounts;
     }
+
+    public function getTiketReopened($days)
+    {
+        $today = now()->startOfDay(); // Mengambil tanggal hari ini tanpa jamnya
+        $yesterdayEnd = now()->subDay()->endOfDay(); // Mengambil akhir hari dari kemarin (pukul 23:59:59)
+        // Ambil data aktivitas dengan tipe "Closed" selama seminggu terakhir
+        $activities = Respon::where('tipe', 'Reopened')
+            ->whereBetween('created_at', [$today->subDays($days)->startOfDay(), $yesterdayEnd])
+            ->get();
+
+        // dd($activities);
+
+        // Buat array untuk menyimpan jumlah aktivitas per hari
+        $activityCounts = [];
+
+        // Inisialisasi tanggal awal
+        $startDate = now()->subDays($days - 1)->startOfDay(); // Mengambil tanggal awal tanpa jamnya
+
+        // Loop untuk menghitung jumlah aktivitas per hari
+        for ($i = 0; $i < $days; $i++) {
+            // Hitung jumlah aktivitas dengan tipe "Closed" pada rentang tanggal tertentu
+            $endDate = $startDate->copy()->endOfDay(); // Akhir hari dari tanggal tersebut (pukul 23:59:59)
+            $count = $activities->where('created_at', '>=', $startDate)->where('created_at', '<=', $endDate)->count();
+
+            // Tambahkan jumlah aktivitas ke dalam array
+            $activityCounts[] = $count;
+
+            // Geser tanggal ke hari berikutnya
+            $startDate->addDay();
+        }
+
+        // Buat respons JSON
+        return $activityCounts;
+    }
+
+    public function getTiketAssigned($days)
+    {
+        $today = now()->startOfDay(); // Mengambil tanggal hari ini tanpa jamnya
+        $yesterdayEnd = now()->subDay()->endOfDay(); // Mengambil akhir hari dari kemarin (pukul 23:59:59)
+        // Ambil data aktivitas dengan tipe "Closed" selama seminggu terakhir
+        $activities = Respon::where('tipe', 'Assigned')
+            ->whereBetween('created_at', [$today->subDays($days)->startOfDay(), $yesterdayEnd])
+            ->get();
+
+        // dd($activities);
+
+        // Buat array untuk menyimpan jumlah aktivitas per hari
+        $activityCounts = [];
+
+        // Inisialisasi tanggal awal
+        $startDate = now()->subDays($days - 1)->startOfDay(); // Mengambil tanggal awal tanpa jamnya
+
+        // Loop untuk menghitung jumlah aktivitas per hari
+        for ($i = 0; $i < $days; $i++) {
+            // Hitung jumlah aktivitas dengan tipe "Closed" pada rentang tanggal tertentu
+            $endDate = $startDate->copy()->endOfDay(); // Akhir hari dari tanggal tersebut (pukul 23:59:59)
+            $count = $activities->where('created_at', '>=', $startDate)->where('created_at', '<=', $endDate)->count();
+
+            // Tambahkan jumlah aktivitas ke dalam array
+            $activityCounts[] = $count;
+
+            // Geser tanggal ke hari berikutnya
+            $startDate->addDay();
+        }
+
+        // Buat respons JSON
+        return $activityCounts;
+    }
+
+    public function getTiketOverdue($days)
+    {
+        $today = now()->startOfDay(); // Mengambil tanggal hari ini tanpa jamnya
+        $yesterdayEnd = now()->subDay()->endOfDay(); // Mengambil akhir hari dari kemarin (pukul 23:59:59)
+        // Ambil data aktivitas dengan tipe "Closed" selama seminggu terakhir
+        $activities = Respon::where('tipe', 'Overdue')
+            ->whereBetween('created_at', [$today->subDays($days)->startOfDay(), $yesterdayEnd])
+            ->get();
+
+        // dd($activities);
+
+        // Buat array untuk menyimpan jumlah aktivitas per hari
+        $activityCounts = [];
+
+        // Inisialisasi tanggal awal
+        $startDate = now()->subDays($days - 1)->startOfDay(); // Mengambil tanggal awal tanpa jamnya
+
+        // Loop untuk menghitung jumlah aktivitas per hari
+        for ($i = 0; $i < $days; $i++) {
+            // Hitung jumlah aktivitas dengan tipe "Closed" pada rentang tanggal tertentu
+            $endDate = $startDate->copy()->endOfDay(); // Akhir hari dari tanggal tersebut (pukul 23:59:59)
+            $count = $activities->where('created_at', '>=', $startDate)->where('created_at', '<=', $endDate)->count();
+
+            // Tambahkan jumlah aktivitas ke dalam array
+            $activityCounts[] = $count;
+
+            // Geser tanggal ke hari berikutnya
+            $startDate->addDay();
+        }
+
+        // Buat respons JSON
+        return $activityCounts;
+    }
+
+
+    public function getTiketUpdated($days)
+    {
+        $today = now()->startOfDay(); // Mengambil tanggal hari ini tanpa jamnya
+        $yesterdayEnd = now()->subDay()->endOfDay(); // Mengambil akhir hari dari kemarin (pukul 23:59:59)
+        // Ambil data aktivitas dengan tipe "Closed" selama seminggu terakhir
+        $activities = Respon::where('tipe', 'Updated')
+            ->whereBetween('created_at', [$today->subDays($days)->startOfDay(), $yesterdayEnd])
+            ->get();
+
+        // dd($activities);
+
+        // Buat array untuk menyimpan jumlah aktivitas per hari
+        $activityCounts = [];
+
+        // Inisialisasi tanggal awal
+        $startDate = now()->subDays($days - 1)->startOfDay(); // Mengambil tanggal awal tanpa jamnya
+
+        // Loop untuk menghitung jumlah aktivitas per hari
+        for ($i = 0; $i < $days; $i++) {
+            // Hitung jumlah aktivitas dengan tipe "Closed" pada rentang tanggal tertentu
+            $endDate = $startDate->copy()->endOfDay(); // Akhir hari dari tanggal tersebut (pukul 23:59:59)
+            $count = $activities->where('created_at', '>=', $startDate)->where('created_at', '<=', $endDate)->count();
+
+            // Tambahkan jumlah aktivitas ke dalam array
+            $activityCounts[] = $count;
+
+            // Geser tanggal ke hari berikutnya
+            $startDate->addDay();
+        }
+
+        // Buat respons JSON
+        return $activityCounts;
+    }
+
 
     // Fungsi untuk menghasilkan label tanggal
     private function generateDateLabels($days)
@@ -121,38 +225,4 @@ class DashboardController extends Controller
 
         return $labels;
     }
-
-    // public function chart(Request $request)
-    // {
-    //     $range = $request->input('range');
-    //     $startDate = Carbon::now()->subDays(7); // default: 7 hari yang lalu
-
-    //     if ($range == '30') {
-    //         $startDate = Carbon::now()->subDays(30);
-    //     } elseif ($range == '90') {
-    //         $startDate = Carbon::now()->subMonths(3);
-    //     } elseif ($range == '365') {
-    //         $startDate = Carbon::now()->subYear();
-    //     }
-
-    //     $responData = Respon::where('created_at', '>=', $startDate)
-    //         ->orderBy('created_at')
-    //         ->get();
-
-    //     $chartData = $this->processChartData($responData);
-
-    //     return response()->json($chartData);
-    // }
-
-    // private function processChartData($responData)
-    // {
-    //     $categories = ['Overdue', 'Assigned', 'Updated', 'Closed', 'Reopened'];
-    //     $data = [];
-
-    //     foreach ($categories as $category) {
-    //         $data[$category] = $responData->where('tipe', $category)->count();
-    //     }
-
-    //     return $data;
-    // }
 }

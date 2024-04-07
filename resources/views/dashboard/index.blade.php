@@ -13,33 +13,6 @@
                     </h2>
                 </div>
                 <!-- Page title actions -->
-                <div class="col-auto ms-auto d-print-none">
-                    <div class="btn-list">
-                        <a href="#" class="btn btn-primary d-none d-sm-inline-block" data-bs-toggle="modal"
-                            data-bs-target="#modal-report">
-                            <!-- Download SVG icon from http://tabler-icons.io/i/plus -->
-                            <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24"
-                                viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
-                                stroke-linecap="round" stroke-linejoin="round">
-                                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                                <path d="M12 5l0 14" />
-                                <path d="M5 12l14 0" />
-                            </svg>
-                            Create new report
-                        </a>
-                        <a href="#" class="btn btn-primary d-sm-none btn-icon" data-bs-toggle="modal"
-                            data-bs-target="#modal-report" aria-label="Create new report">
-                            <!-- Download SVG icon from http://tabler-icons.io/i/plus -->
-                            <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24"
-                                viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
-                                stroke-linecap="round" stroke-linejoin="round">
-                                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                                <path d="M12 5l0 14" />
-                                <path d="M5 12l14 0" />
-                            </svg>
-                        </a>
-                    </div>
-                </div>
             </div>
         </div>
     </div>
@@ -55,15 +28,29 @@
                                 <div class="ms-auto">
                                     <div class="dropdown">
                                         <a class="dropdown-toggle text-secondary" href="#" data-bs-toggle="dropdown"
-                                            aria-haspopup="true" aria-expanded="false">Last 7 days</a>
+                                            aria-haspopup="true" aria-expanded="false">
+                                            @if (Request()->days == 7 || !Request()->days)
+                                                Last 7 days
+                                            @elseif(Request()->days == 30)
+                                                Last 30 days
+                                            @elseif(Request()->days == 90)
+                                                Last 3 months
+                                            @else
+                                                Last 1 year
+                                            @endif
+                                        </a>
                                         <div class="dropdown-menu dropdown-menu-end">
-                                            <a class="dropdown-item active" href="#" onclick="getChartData(7)">Last 7
+                                            <a class="dropdown-item {{ Request()->days == 7 || !Request()->days ? 'active' : '' }}"
+                                                href="/dashboard?days=7">Last 7
                                                 days</a>
-                                            <a class="dropdown-item" href="#" onclick="getChartData(30)">Last 30
+                                            <a class="dropdown-item {{ Request()->days == 30 ? 'active' : '' }}"
+                                                href="/dashboard?days=30">Last 30
                                                 days</a>
-                                            <a class="dropdown-item" href="#" onclick="getChartData(90)">Last 3
+                                            <a class="dropdown-item {{ Request()->days == 90 ? 'active' : '' }}"
+                                                href="/dashboard?days=90">Last 3
                                                 months</a>
-                                            <a class="dropdown-item" href="#" onclick="getChartData(365)">Last 1
+                                            <a class="dropdown-item {{ Request()->days == 365 ? 'active' : '' }}"
+                                                href="/dashboard?days=365">Last 1
                                                 year</a>
                                         </div>
                                     </div>
@@ -122,8 +109,8 @@
                                 <div class="subheader">Revenue</div>
                                 <div class="ms-auto lh-1">
                                     <div class="dropdown">
-                                        <a class="dropdown-toggle text-secondary" href="#"
-                                            data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Last 7
+                                        <a class="dropdown-toggle text-secondary" href="#" data-bs-toggle="dropdown"
+                                            aria-haspopup="true" aria-expanded="false">Last 7
                                             days</a>
                                         <div class="dropdown-menu dropdown-menu-end">
                                             <a class="dropdown-item active" href="#">Last 7 days</a>
