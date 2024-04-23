@@ -9,6 +9,7 @@ use App\Http\Controllers\KategoriPermasalahanController;
 use App\Http\Controllers\KnowledgebaseController;
 use App\Http\Controllers\LandingpageController;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RegistrasiController;
 use App\Http\Controllers\TiketController;
 use App\Http\Controllers\TimController;
@@ -46,9 +47,17 @@ Route::middleware('guest')->group(function () {
     Route::post('/login', [LoginController::class, 'store']);
     Route::get('/registrasi', [RegistrasiController::class, 'index'])->name('registrasi');
     Route::post('/registrasi', [RegistrasiController::class, 'store']);
+
+    Route::get('/lupa_password', [LoginController::class, 'lupaPassword'])->name('lupa_password');
+    Route::post('/lupa_password', [LoginController::class, 'sendMail']);
+    Route::get('/confirm_reset/{token}', [LoginController::class, 'confirmResetPass'])->name('confirm_reset');
+    Route::post('/reset_pass', [LoginController::class, 'resetPassword']);
 });
 
 Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
+    Route::post('/profile', [ProfileController::class, 'update']);
+
 
     Route::group(['middleware' => 'userAkses:Admin,Agent,General Manager'], function () {
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
@@ -86,12 +95,6 @@ Route::middleware('auth')->group(function () {
         Route::get('/dampak_permasalahan/{id}', [DampakPermasalahanController::class, 'edit']);
         Route::patch('/dampak_permasalahan/{id}', [DampakPermasalahanController::class, 'update']);
 
-        Route::get('/kb', [KnowledgebaseController::class, 'index'])->name('kb');
-        Route::post('/kb', [KnowledgebaseController::class, 'store']);
-        Route::delete('/kb', [KnowledgebaseController::class, 'destroy']);
-        Route::get('/kb/{id}', [KnowledgebaseController::class, 'edit']);
-        Route::patch('/kb/{id}', [KnowledgebaseController::class, 'update']);
-
         Route::get('/kategori_masalah', [KategoriPermasalahanController::class, 'index'])->name('kategori_masalah');
         Route::post('/kategori_masalah', [KategoriPermasalahanController::class, 'store']);
         Route::delete('/kategori_masalah', [KategoriPermasalahanController::class, 'destroy']);
@@ -107,12 +110,19 @@ Route::middleware('auth')->group(function () {
         Route::delete('/tiket/restore', [TiketController::class, 'restore']);
         Route::post('/tiket/alih', [TiketController::class, 'alihTiket']);
         Route::get('/tiket/{id}/cetak', [TiketController::class, 'cetak'])->name('tiket');
+
+        Route::get('/kb', [KnowledgebaseController::class, 'index'])->name('kb');
+        Route::post('/kb', [KnowledgebaseController::class, 'store']);
+        Route::delete('/kb', [KnowledgebaseController::class, 'destroy']);
+        Route::get('/kb/{id}', [KnowledgebaseController::class, 'edit']);
+        Route::patch('/kb/{id}', [KnowledgebaseController::class, 'update']);
     });
 
     Route::group(['middleware' => 'userAkses:User'], function () {
         Route::get('/tiket_user', [TiketController::class, 'tiketUser'])->name('tiket_user');
         Route::get('/tiket_user/detail', [TiketController::class, 'detailTiket'])->name('tiket_user');
     });
+
     Route::group(['middleware' => 'userAkses:General Manager'], function () {
         Route::get('/tiket_keluhan', [TiketController::class, 'tiketKeluhan'])->name('tiket_keluhan');
         Route::get('/tiket_layanan', [TiketController::class, 'tiketLayanan'])->name('tiket_layanan');
@@ -121,6 +131,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/cetak_tiket_layanan', [TiketController::class, 'cetakTiketLayanan'])->name('cetak_tiket_layanan');
         Route::get('/cetak_agent', [TiketController::class, 'cetakAgent'])->name('cetak_agent');
     });
+
     Route::group(['middleware' => 'userAkses:Agent,General Manager'], function () {
         Route::get('/tiket/{id}', [TiketController::class, 'edit'])->name('tiket');
     });

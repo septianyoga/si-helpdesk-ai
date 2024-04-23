@@ -5,6 +5,7 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -26,7 +27,6 @@ class Akun extends Authenticatable
         'no_whatsapp',
         'role',
         'current_role',
-        'tim_id',
         'jabatan_id',
         'divisi_id',
         'is_active'
@@ -52,9 +52,9 @@ class Akun extends Authenticatable
         'password' => 'hashed',
     ];
 
-    public function tim(): BelongsTo
+    public function akun_tim(): HasMany
     {
-        return $this->belongsTo(Tim::class);
+        return $this->hasMany(AkunTim::class);
     }
 
     public function jabatan(): BelongsTo

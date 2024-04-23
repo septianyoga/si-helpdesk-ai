@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Respon;
+use App\Models\Tiket;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -19,7 +20,14 @@ class DashboardController extends Controller
         $chart = $this->getTiketData($day_ticket);
         return view('dashboard.index', [
             'title' => 'Dashboard',
-            'chart' => $chart
+            'chart' => $chart,
+            'tiket' => [
+                'opened'    => Tiket::where('status', 'Open')->count(),
+                'assigned'  => Respon::where('tipe', 'Assigned')->count(),
+                'overdue'   => Respon::where('tipe', 'Overdue')->count(),
+                'closed'    => Respon::where('tipe', 'Closed')->count(),
+                'reopened'  => Respon::where('tipe', 'Reopened')->count(),
+            ]
         ]);
     }
 

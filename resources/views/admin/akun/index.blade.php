@@ -56,9 +56,21 @@
                                         <td>{{ $akun->nip }}</td>
                                         <td>{{ $akun->no_whatsapp }}</td>
                                         <td>{{ $akun->role }}</td>
-                                        <td>{{ $akun->tim != null ? $akun->tim->nama_tim : '' }}</td>
-                                        <td>{{ $akun->jabatan != null ? $akun->jabatan->nama_jabatan : '' }}</td>
-                                        <td>{{ $akun->divisi != null ? $akun->divisi->nama_divisi : '' }}</td>
+                                        <td>
+                                            @foreach ($akun->akun_tim as $tim)
+                                                <div class="list-group-item">
+                                                    <div class="row align-items-center">
+                                                        <div class="col-auto"><span class="badge bg-green"></span></div>
+                                                        <div class="col text-truncate">
+                                                            <a href="#"
+                                                                class="text-reset d-block">{{ $tim->tim->nama_tim }}</a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            @endforeach
+                                        </td>
+                                        <td>{{ $akun->jabatan?->nama_jabatan }}</td>
+                                        <td>{{ $akun->divisi?->nama_divisi }}</td>
                                         <td>{{ $akun->is_active ? 'Aktif' : 'Non Aktif' }}</td>
                                         <td>
                                             <a href="#"
@@ -233,15 +245,18 @@
                                 </div>
                                 <div class="mb-3">
                                     <label class="form-label ">Tim</label>
-                                    <select type="text" class="form-select @error('tim_id') is-invalid @enderror"
-                                        id="select-users" name="tim_id">
-                                        <option value="" hidden>-- Pilih Tim --</option>
+                                    <select type="text" name="tim_id[]" class="form-select" placeholder="Pilih TIM"
+                                        id="select-tags" value="" multiple>
                                         @foreach ($tims as $tim)
                                             <option value="{{ $tim->id }}"
                                                 {{ old('tim_id') == $tim->id ? 'selected' : '' }}>{{ $tim->nama_tim }}
                                             </option>
                                         @endforeach
                                     </select>
+                                    {{-- <select type="text" class="form-select @error('tim_id') is-invalid @enderror"
+                                        id="select-users" name="tim_id">
+                                        <option value="" hidden>-- Pilih Tim --</option>
+                                    </select> --}}
                                     @error('role')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror

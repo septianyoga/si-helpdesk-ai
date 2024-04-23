@@ -19,4 +19,9 @@ class Tim extends Model
     {
         return $this->hasMany(Akun::class);
     }
+
+    public function akun_tim(): HasMany
+    {
+        return $this->hasMany(AkunTim::class);
+    }
 }

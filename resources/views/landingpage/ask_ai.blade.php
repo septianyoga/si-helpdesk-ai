@@ -5,8 +5,12 @@
             <div class="row g-2 align-items-center">
                 <div class="col">
                     <h2 class="page-title">
-                        Chat
+                        Chatbot
                     </h2>
+                    <div class="page-pretitle">
+                        Tanyakan pertanyaan kamu terkait IT WIKA pada kolom chatbot dibawah ini. Helpdesk AI akan membantu
+                        kamu dalam menjawab pertanyaan.
+                    </div>
                 </div>
             </div>
         </div>
@@ -359,11 +363,11 @@
                     //     },
                     //     {
                     //         "id": 2,
-                    //         "knowledgebase": "Tahapan untuk mengatasi lupa password pada website Wzone: 1. Mengunjungi wzone 2. Klik tombol lupa password 3. Mengisi email. 4. Link reset password akan dikirimkan ke email anda. 5. Cek email ada secara berkala. 6. Klik link yang dikirimkan via email. 7. Masukan password baru untuk mereset password."
+                    //         "knowledgebase": "Tahapan untuk mengatasi lupa password pada website Wzone: 1. Mengunjungi wzone 2. Klik tombol lupa password 3. Mengisi email. 4. Link reset password akan dikirimkan ke email kamu. 5. Cek email ada secara berkala. 6. Klik link yang dikirimkan via email. 7. Masukan password baru untuk mereset password."
                     //     },
                     //     {
                     //         "id": 3,
-                    //         "knowledgebase": "jika pertanyaan bukan merujuk untuk nanya, jawablah dengan ramah, dan jika pertanyaan berada diluar konteks dari data yang diberikan, berikan pesan 'Pertanyaan anda diluar konteks HELPDESK, silahkan mengajukan tiket jika dirasa perlu dijawab oleh TIM IT' serta berikan juga tombol link html yang mengarah pada link https://sla/create-ticket"
+                    //         "knowledgebase": "jika pertanyaan bukan merujuk untuk nanya, jawablah dengan ramah, dan jika pertanyaan berada diluar konteks dari data yang diberikan, berikan pesan 'Pertanyaan kamu diluar konteks HELPDESK, silahkan mengajukan tiket jika dirasa perlu dijawab oleh TIM IT' serta berikan juga tombol link html yang mengarah pada link https://sla/create-ticket"
                     //     },
                     //     {
                     //         "id": 4,

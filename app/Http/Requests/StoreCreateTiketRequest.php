@@ -30,7 +30,7 @@ class StoreCreateTiketRequest extends FormRequest
             'ringkasan_masalah' => ['required'],
             'tipe' => ['required'],
             'pesan' => ['required'],
-            'lampiran'  => ['nullable', 'max:2048']
+            // 'lampiran'  => ['nullable', 'max:2048']
         ];
     }
 
@@ -45,7 +45,7 @@ class StoreCreateTiketRequest extends FormRequest
             'ringkasan_masalah.required' => 'Ringkasan Masalah wajib diisi!',
             'tipe.required' => 'Tipe wajib diisi!',
             'pesan.required' => 'Deskripsi Masalah wajib diisi!',
-            'lampiran.max' => 'Maksimal file upload 2MB!',
+            // 'lampiran.max' => 'Maksimal file upload 2MB!',
         ];
     }
 }

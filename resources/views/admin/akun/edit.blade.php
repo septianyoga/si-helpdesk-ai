@@ -93,7 +93,15 @@
                     <div class="mb-3 row">
                         <label class="col-3 col-form-label required">Tim</label>
                         <div class="col">
-                            <select type="text" class="form-select @error('tim_id') is-invalid @enderror"
+                            <select type="text" name="tim_id[]" class="form-select" id="select-tags" multiple>
+                                @foreach ($tims as $tim)
+                                    <option value="{{ $tim->id }}"
+                                        {{ $akun->akun_tim->contains('tim_id', $tim->id) ? 'selected' : '' }}>
+                                        {{ $tim->nama_tim }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            {{-- <select type="text" class="form-select @error('tim_id') is-invalid @enderror"
                                 id="select-users" name="tim_id">
                                 <option value="" hidden>-- Pilih Tim --</option>
                                 @foreach ($tims as $tim)
@@ -101,7 +109,7 @@
                                         {{ $tim->nama_tim }}
                                     </option>
                                 @endforeach
-                            </select>
+                            </select> --}}
                             @error('role')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror

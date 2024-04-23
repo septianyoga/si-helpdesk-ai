@@ -69,7 +69,7 @@
                             @enderror
                         </div>
                         <div class="col-lg-6 col-12 mb-3">
-                            <label class="form-label required">Tipe</label>
+                            <label class="form-label required">Tipe Tiket</label>
                             <select name="tipe" id="tipe" class="form-select @error('tipe') is-invalid @enderror">
                                 <option value="" hidden>--Pilih--</option>
                                 <option value="Insiden">Insiden</option>
@@ -87,12 +87,13 @@
                             @enderror
                         </div>
                         <div class="col-lg-6 col-12 mb-3">
-                            <label class="form-label">Lampiran</label>
-                            <input type="file" name="lampiran"
+                            <label class="form-label">Lampiran <small>*Dapat lebih dari satu</small></label>
+                            <input type="file" name="lampiran[]"
                                 class="form-control @error('lampiran') is-invalid @enderror" multiple />
                             @error('lampiran')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
+                            <small>Maks. 3MB.</small><br>
                         </div>
                         <div class="mb-3">
                             <button type="submit" class="btn btn-primary">Kirim</button>

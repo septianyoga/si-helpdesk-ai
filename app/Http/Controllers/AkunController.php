@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Akun;
 use App\Http\Requests\StoreAkunRequest;
 use App\Http\Requests\UpdateAkunRequest;
+use App\Models\AkunTim;
 use App\Models\Divisi;
 use App\Models\Jabatan;
 use App\Models\Tim;
@@ -18,7 +19,7 @@ class AkunController extends Controller
     public function index()
     {
         //
-        $akun = Akun::with(['tim', 'jabatan', 'divisi'])->get();
+        $akun = Akun::with(['akun_tim.tim', 'jabatan', 'divisi'])->get();
         $tim = Tim::all();
         $jabatan = Jabatan::all();
         $divisi = Divisi::all();
@@ -45,18 +46,25 @@ class AkunController extends Controller
     public function store(StoreAkunRequest $request)
     {
         //
-        // dd($request);
-        Akun::create([
+        // dd($request->all());
+        $akun = Akun::create([
             'nama_akun' => $request->nama_akun,
             'email' => $request->email,
             'nip'   => $request->nip,
             'no_whatsapp'   => $request->no_whatsapp,
             'role'   => $request->role,
             'password'   => Hash::make($request->password),
-            'tim_id'   => $request->tim_id,
             'jabatan_id'   => $request->jabatan_id,
             'divisi_id'   => $request->divisi_id,
         ]);
+
+        foreach ($request->tim_id as $value) {
+            AkunTim::create([
+                'akun_id'   => $akun->id,
+                'tim_id'    => $value
+            ]);
+        }
+
         notify()->success('Akun berhasil ditambakan!');
         return redirect()->to('/akun');
     }
@@ -75,7 +83,7 @@ class AkunController extends Controller
     public function edit(Akun $akun, string $id)
     {
         //
-        $akun = $akun->findOrFail($id);
+        $akun = $akun->with('akun_tim')->findOrFail($id);
         $tim = Tim::all();
         $jabatan = Jabatan::all();
         $divisi = Divisi::all();
@@ -102,7 +110,6 @@ class AkunController extends Controller
             'no_whatsapp' => $request->no_whatsapp,
             'role' => $request->role,
             'password' => Hash::make($request->password),
-            'tim_id' => $request->tim_id,
             'jabatan_id' => $request->jabatan_id,
             'divisi_id' => $request->divisi_id,
         ];
@@ -111,6 +118,16 @@ class AkunController extends Controller
         }
         $akun = $akun->findOrFail($id);
         $akun->update($data);
+
+        // Menghapus relasi lama
+        $akun->akun_tim()->delete();
+
+        foreach ($request->tim_id as $value) {
+            AkunTim::create([
+                'akun_id' => $akun->id,
+                'tim_id' => $value
+            ]);
+        }
         notify()->success('Akun Berhasil Di Edit');
         return redirect()->to('/akun');
     }

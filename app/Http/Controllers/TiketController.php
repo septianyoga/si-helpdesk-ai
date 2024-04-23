@@ -28,6 +28,7 @@ class TiketController extends Controller
     public function index()
     {
         //
+        $akunId = Auth::user()->id;
         if (Request()->c) {
             return view('tiket.tiket_trash', [
                 'title' => 'Tiket Terhapus',
@@ -36,7 +37,16 @@ class TiketController extends Controller
         } else {
             return view('tiket.index', [
                 'title' => 'Tiket',
-                'tikets'    => Tiket::orderBy('created_at', 'desc')->with(['akun', 'penjawab', 'dampak_permasalahan', 'kategori_permasalahan.tim'])->get(),
+                'tikets'    => Tiket::orderBy('created_at', 'desc')
+                    ->with(['akun', 'penjawab', 'dampak_permasalahan', 'kategori_permasalahan.tim'])
+                    ->where(function ($query) use ($akunId) {
+                        $query->whereHas('kategori_permasalahan.tim', function ($query) use ($akunId) {
+                            $query->whereHas('akun_tim', function ($query) use ($akunId) {
+                                $query->where('akun_id', $akunId);
+                            });
+                        })->orWhere('penjawab_id', $akunId); // Filter berdasarkan penjawab_id
+                    })
+                    ->get(),
                 'agents'     => Akun::where('role', 'agent')->get()
             ]);
         }
@@ -249,6 +259,20 @@ class TiketController extends Controller
 
     public function kirimTiket(StoreCreateTiketRequest $request)
     {
+        if ($request->lampiran) {
+            $totalSize = 0;
+            // Hitung total ukuran lampiran
+            foreach ($request->lampiran as $key => $file) {
+                $totalSize += $file->getSize();
+            }
+
+            // Validasi total ukuran lampiran
+            if ($totalSize > (3 * 1024 * 1024)) {
+                return redirect()->back()->withErrors(['lampiran' => 'Total ukuran lampiran tidak boleh melebihi 3MB.']);
+            }
+        }
+
+
         // generate a unique id
         $tiket_id = mt_rand(100000, 999999);
         $chat_id = mt_rand(1, 999999);
