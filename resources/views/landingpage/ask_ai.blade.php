@@ -1,5 +1,5 @@
-@extends('layouts/main')
-@section('content')
+@extends('layouts_front/main')
+@section('content_front')
     <div class="page-header d-print-none">
         <div class="container-xl">
             <div class="row g-2 align-items-center">
@@ -314,7 +314,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-auto"><span class="avatar" style="background-image: url(./static/avatars/000m.jpg)"></span></div>
+                        <div class="col-auto"><span class="avatar" style="background-image: url({{ asset('assets/img/avatar.png') }})"></span></div>
                     </div>
                 </div>
             `);

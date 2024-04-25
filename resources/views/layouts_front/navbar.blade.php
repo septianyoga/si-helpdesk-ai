@@ -106,49 +106,50 @@
                             </span>
                         </a>
                     </li>
-                    {{-- <li class="nav-item">
-                        <a class="nav-link" href="./">
-                            <span
-                                class="nav-link-icon d-md-none d-lg-inline-block"><!-- Download SVG icon from http://tabler-icons.io/i/home -->
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                    stroke-linecap="round" stroke-linejoin="round"
-                                    class="icon icon-tabler icons-tabler-outline icon-tabler-book">
-                                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                                    <path d="M3 19a9 9 0 0 1 9 0a9 9 0 0 1 9 0" />
-                                    <path d="M3 6a9 9 0 0 1 9 0a9 9 0 0 1 9 0" />
-                                    <path d="M3 6l0 13" />
-                                    <path d="M12 6l0 13" />
-                                    <path d="M21 6l0 13" />
-                                </svg>
-                            </span>
-                            <span class="nav-link-title">
-                                Knowledgebase
-                            </span>
-                        </a>
-                    </li> --}}
-                    <li class="nav-item">
-                        <a class="nav-link" href="/buat_tiket">
-                            <span
-                                class="nav-link-icon d-md-none d-lg-inline-block"><!-- Download SVG icon from http://tabler-icons.io/i/home -->
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                    stroke-linecap="round" stroke-linejoin="round"
-                                    class="icon icon-tabler icons-tabler-outline icon-tabler-ticket">
-                                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                                    <path d="M15 5l0 2" />
-                                    <path d="M15 11l0 2" />
-                                    <path d="M15 17l0 2" />
-                                    <path
-                                        d="M5 5h14a2 2 0 0 1 2 2v3a2 2 0 0 0 0 4v3a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-3a2 2 0 0 0 0 -4v-3a2 2 0 0 1 2 -2" />
-                                </svg>
-                            </span>
-                            <span class="nav-link-title">
-                                Buat Tiket
-                            </span>
-                        </a>
-                    </li>
-                    @if (Auth::user())
+                    @if (!Auth::user() || Auth::user()?->role == 'User')
+                        <li class="nav-item">
+                            <a class="nav-link" href="/buat_tiket">
+                                <span
+                                    class="nav-link-icon d-md-none d-lg-inline-block"><!-- Download SVG icon from http://tabler-icons.io/i/home -->
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                        stroke-linecap="round" stroke-linejoin="round"
+                                        class="icon icon-tabler icons-tabler-outline icon-tabler-ticket">
+                                        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                        <path d="M15 5l0 2" />
+                                        <path d="M15 11l0 2" />
+                                        <path d="M15 17l0 2" />
+                                        <path
+                                            d="M5 5h14a2 2 0 0 1 2 2v3a2 2 0 0 0 0 4v3a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-3a2 2 0 0 0 0 -4v-3a2 2 0 0 1 2 -2" />
+                                    </svg>
+                                </span>
+                                <span class="nav-link-title">
+                                    Buat Tiket
+                                </span>
+                            </a>
+                        </li>
+                    @else
+                        <li class="nav-item">
+                            <a class="nav-link" href="/dashboard">
+                                <span
+                                    class="nav-link-icon d-md-none d-lg-inline-block"><!-- Download SVG icon from http://tabler-icons.io/i/home -->
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                        stroke-linecap="round" stroke-linejoin="round"
+                                        class="icon icon-tabler icons-tabler-outline icon-tabler-dashboard">
+                                        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                        <path d="M12 13m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
+                                        <path d="M13.45 11.55l2.05 -2.05" />
+                                        <path d="M6.4 20a9 9 0 1 1 11.2 0z" />
+                                    </svg>
+                                </span>
+                                <span class="nav-link-title">
+                                    Dashboard
+                                </span>
+                            </a>
+                        </li>
+                    @endif
+                    @if (Auth::user()?->role == 'User')
                         <li class="nav-item">
                             <a class="nav-link" href="/tiket_user">
                                 <span
@@ -191,7 +192,7 @@
                                 </span>
                             </a>
                         </li>
-                    @else
+                    @elseif(!Auth::user())
                         <li class="nav-item">
                             <a class="nav-link" href="/cek_tiket">
                                 <span

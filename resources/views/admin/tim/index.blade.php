@@ -46,13 +46,13 @@
                                         <td>{{ $loop->iteration }}.</td>
                                         <td>{{ $tim->nama_tim }}</td>
                                         <td>
-                                            @foreach ($tim->akun as $user)
+                                            @foreach ($tim->akun_tim as $user)
                                                 <div class="list-group-item">
                                                     <div class="row align-items-center">
                                                         <div class="col-auto"><span class="badge bg-green"></span></div>
                                                         <div class="col text-truncate">
                                                             <a href="#"
-                                                                class="text-reset d-block">{{ $user->nama_akun }}</a>
+                                                                class="text-reset d-block">{{ $user->akun->nama_akun }}</a>
                                                         </div>
                                                     </div>
                                                 </div>

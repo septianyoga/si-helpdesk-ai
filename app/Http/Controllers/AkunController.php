@@ -58,11 +58,13 @@ class AkunController extends Controller
             'divisi_id'   => $request->divisi_id,
         ]);
 
-        foreach ($request->tim_id as $value) {
-            AkunTim::create([
-                'akun_id'   => $akun->id,
-                'tim_id'    => $value
-            ]);
+        if ($request->tim_id) {
+            foreach ($request->tim_id as $value) {
+                AkunTim::create([
+                    'akun_id'   => $akun->id,
+                    'tim_id'    => $value
+                ]);
+            }
         }
 
         notify()->success('Akun berhasil ditambakan!');
@@ -122,11 +124,13 @@ class AkunController extends Controller
         // Menghapus relasi lama
         $akun->akun_tim()->delete();
 
-        foreach ($request->tim_id as $value) {
-            AkunTim::create([
-                'akun_id' => $akun->id,
-                'tim_id' => $value
-            ]);
+        if ($request->tim_id) {
+            foreach ($request->tim_id as $value) {
+                AkunTim::create([
+                    'akun_id' => $akun->id,
+                    'tim_id' => $value
+                ]);
+            }
         }
         notify()->success('Akun Berhasil Di Edit');
         return redirect()->to('/akun');

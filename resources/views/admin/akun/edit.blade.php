@@ -93,7 +93,8 @@
                     <div class="mb-3 row">
                         <label class="col-3 col-form-label required">Tim</label>
                         <div class="col">
-                            <select type="text" name="tim_id[]" class="form-select" id="select-tags" multiple>
+                            <select type="text" name="tim_id[]" class="form-select" id="select-tags" multiple
+                                placeholder="Pilih TIM">
                                 @foreach ($tims as $tim)
                                     <option value="{{ $tim->id }}"
                                         {{ $akun->akun_tim->contains('tim_id', $tim->id) ? 'selected' : '' }}>

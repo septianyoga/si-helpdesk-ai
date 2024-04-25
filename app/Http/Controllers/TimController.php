@@ -15,10 +15,9 @@ class TimController extends Controller
     public function index()
     {
         //
-        // return Tim::with('akun')->get();
         return view('admin.tim.index', [
             'title' => 'Kelola Tim',
-            'tims'  => Tim::with('akun')->get()
+            'tims'  => Tim::with('akun_tim.akun')->get()
         ]);
     }
 

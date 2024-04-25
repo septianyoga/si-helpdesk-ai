@@ -19,4 +19,9 @@ class AkunTim extends Model
     {
         return $this->belongsTo(Tim::class);
     }
+
+    public function akun(): BelongsTo
+    {
+        return $this->belongsTo(Akun::class);
+    }
 }
