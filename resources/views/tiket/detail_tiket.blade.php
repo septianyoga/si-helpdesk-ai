@@ -216,14 +216,14 @@
                                                 @if ($respons->tipe == 'Assigned')
                                                     <span class="avatar avatar-xs mx-1"
                                                         style="background-image: url({{ asset('/assets/img/avatar.png') }})"></span>
-                                                    {{ $respons->agent->nama_akun }}
-                                                    Mengalihkan tiket ke {{ $tiket->penjawab->nama_akun }}
+                                                    {{ $respons->agent?->nama_akun }}
+                                                    Mengalihkan tiket ke {{ $tiket->penjawab?->nama_akun }}
                                                     {{ date('d/m/Y H:i:s', strtotime($respons->created_at)) }}
                                                 @else
                                                     {{ $respons->tipe }} by
                                                     <span class="avatar avatar-xs mx-1"
                                                         style="background-image: url({{ asset('/assets/img/avatar.png') }})"></span>
-                                                    {{ $respons->action_by ? $respons->agent->nama_akun : $tiket->akun->nama_akun }}
+                                                    {{ $respons->action_by ? $respons->agent?->nama_akun : $tiket->akun?->nama_akun }}
                                                     dengan status {{ $respons->pesan }}
                                                     {{ date('d/m/Y H:i:s', strtotime($respons->created_at)) }}
                                                 @endif
@@ -239,7 +239,7 @@
                                     <div class=" d-flex">
                                         <div class="card w-100">
                                             <div class="card-header bg-azure-lt py-2 border d-flex align-items-center ">
-                                                <h3 class="card-title fw-bold ">{{ $tiket->penjawab->nama_akun }}
+                                                <h3 class="card-title fw-bold ">{{ $tiket->penjawab?->nama_akun }}
                                                 </h3>
                                                 <p class="my-0 ms-3">dibalas pada
                                                     {{ date('d/m/Y H:i:s', strtotime($respons->created_at)) }}

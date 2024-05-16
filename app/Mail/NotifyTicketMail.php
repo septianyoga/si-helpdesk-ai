@@ -2,6 +2,7 @@
 
 namespace App\Mail;
 
+use App\Models\Tiket;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
@@ -9,19 +10,19 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class ResetPasswordMail extends Mailable
+class NotifyTicketMail extends Mailable
 {
     use Queueable, SerializesModels;
 
-    protected $token, $nama;
+    protected $tiket_id;
+
     /**
      * Create a new message instance.
      */
-    public function __construct($data)
+    public function __construct($tiket_id)
     {
         //
-        $this->token = $data['token'];
-        $this->nama = $data['nama'];
+        $this->tiket_id = $tiket_id;
     }
 
     /**
@@ -30,7 +31,7 @@ class ResetPasswordMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Reset Password Email',
+            subject: 'Tiket Baru Helpdesk DIVISI IT PT Wijaya Karya',
         );
     }
 
@@ -39,11 +40,11 @@ class ResetPasswordMail extends Mailable
      */
     public function content(): Content
     {
+        $tiket = Tiket::with(['akun.divisi', 'respon'])->findOrFail($this->tiket_id);
         return new Content(
-            view: 'mail.email_reset_password',
+            view: 'mail.tiket_mail',
             with: [
-                'token' => $this->token,
-                'nama'  => $this->nama
+                'tiket' => $tiket
             ]
         );
     }

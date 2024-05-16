@@ -457,14 +457,14 @@
 </head>
 
 <body>
-    <span class="preheader">Use this link to reset your password. The link is only valid for 24 hours.</span>
+    <span class="preheader">Notifikasi tiket baru HELPDESK IT DIVISION WIJAYA KARYA.</span>
     <table class="email-wrapper" width="100%" cellpadding="0" cellspacing="0" role="presentation">
         <tr>
             <td align="center">
                 <table class="email-content" width="100%" cellpadding="0" cellspacing="0" role="presentation">
                     <tr>
                         <td class="email-masthead">
-                            <a href="https://example.com" class="f-fallback email-masthead_name">
+                            <a href="{{ route('/') }}" class="f-fallback email-masthead_name">
                                 Helpdesk AI
                             </a>
                         </td>
@@ -478,10 +478,14 @@
                                 <tr>
                                     <td class="content-cell">
                                         <div class="f-fallback">
-                                            <h1>Hi {{ $nama }},</h1>
-                                            <p>You recently requested to reset your password for your Helpdesk AI
-                                                account. Use the button below to reset it. <strong>This password reset
-                                                    is only valid for the next 24 hours.</strong></p>
+                                            <h1>Hi IT DIVISION,</h1>
+                                            <p>Terdapat tiket masuk baru pada sistem HELPDESK IT WIKA. <strong>Klik link
+                                                    berikut ini untuk diarahkan langusung ke detail tiket.</strong></p>
+                                            <p>Issue Summary : <strong>{{ $tiket->ringkasan_masalah }}</strong></p>
+                                            <p>Dari : <strong>{{ $tiket->akun?->nama_akun }} -
+                                                    {{ $tiket->akun?->divisi?->nama_divisi }}</strong></p>
+                                            <p>Respon :</p>
+                                            <p>{!! $tiket->respon[0]->pesan !!}</p>
                                             <!-- Action -->
                                             <table class="body-action" align="center" width="100%" cellpadding="0"
                                                 cellspacing="0" role="presentation">
@@ -493,15 +497,18 @@
                                                             cellpadding="0" role="presentation">
                                                             <tr>
                                                                 <td align="center">
-                                                                    <a href="{{ route('confirm_reset', ['token' => $token]) }}"
+                                                                    <a href="{{ route('tiket', ['id' => $tiket->id]) }}"
                                                                         class="f-fallback button button--green"
-                                                                        target="_blank">Reset your password</a>
+                                                                        target="_blank">Go To Ticket Detail</a>
                                                                 </td>
                                                             </tr>
                                                         </table>
                                                     </td>
                                                 </tr>
                                             </table>
+                                            <div style="display: flex; justify-content: end">
+                                                <p>{{ date('d M Y H:i', strtotime($tiket->created_at)) }}</p>
+                                            </div>
                                             <p>Thanks,
                                                 <br>The Helpdesk AI team
                                             </p>
@@ -515,6 +522,8 @@
                                                     </td>
                                                 </tr>
                                             </table>
+                                            <a
+                                                href="{{ route('tiket', ['id' => $tiket->id]) }}">{{ route('tiket', ['id' => $tiket->id]) }}</a>
                                         </div>
                                     </td>
                                 </tr>

@@ -27,7 +27,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', [LandingpageController::class, 'index']);
+Route::get('/', [LandingpageController::class, 'index'])->name('/');
 
 Route::get('/tanya_ai', [LandingpageController::class, 'ask_ai']);
 
@@ -40,6 +40,7 @@ Route::get('/logout_cek_tiket', [TiketController::class, 'logoutCekTiket'])->nam
 Route::get('/download/{nama_lampiran}', [TiketController::class, 'downloadLampiran'])->name('download');
 Route::post('/balas_tiket/{id}', [TiketController::class, 'balasTiket']);
 Route::get('/tiket_user/closed/{id}', [TiketController::class, 'closedTiket'])->name('tiket_user');
+Route::get('/kirim_tiket', [TiketController::class, 'kirimTiketMail'])->name('kirim_tiket');
 
 
 Route::middleware('guest')->group(function () {
@@ -109,7 +110,7 @@ Route::middleware('auth')->group(function () {
         Route::delete('/tiket', [TiketController::class, 'destroy']);
         Route::delete('/tiket/restore', [TiketController::class, 'restore']);
         Route::post('/tiket/alih', [TiketController::class, 'alihTiket']);
-        Route::get('/tiket/{id}/cetak', [TiketController::class, 'cetak'])->name('tiket');
+        Route::get('/tiket/{id}/cetak', [TiketController::class, 'cetak'])->name('tiket.cetak');
 
         Route::get('/kb', [KnowledgebaseController::class, 'index'])->name('kb');
         Route::post('/kb', [KnowledgebaseController::class, 'store']);

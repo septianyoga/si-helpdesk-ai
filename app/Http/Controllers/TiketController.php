@@ -8,6 +8,7 @@ use App\Http\Requests\StoreCreateTiketRequest;
 use App\Models\Tiket;
 use App\Http\Requests\StoreTiketRequest;
 use App\Http\Requests\UpdateTiketRequest;
+use App\Mail\NotifyTicketMail;
 use App\Models\Akun;
 use App\Models\DampakPermasalahan;
 use App\Models\KategoriPermasalahan;
@@ -17,6 +18,7 @@ use App\Models\Respon;
 use Barryvdh\DomPDF\Facade\Pdf as PDF;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Session;
 
@@ -82,15 +84,6 @@ class TiketController extends Controller
     public function edit(Tiket $tiket, string $id)
     {
         //
-        // return Tiket::withTrashed()->with([
-        //     'akun.jabatan',
-        //     'akun.divisi',
-        //     'kategori_permasalahan.tim',
-        //     'dampak_permasalahan',
-        //     'respon.agent',
-        //     'respon.lampiran',
-        //     'penjawab'
-        // ])->where('id', $id)->first();
         return view('tiket.detail_tiket', [
             'title' => 'Detail Tiket',
             'tiket' => Tiket::withTrashed()->with([
@@ -220,16 +213,15 @@ class TiketController extends Controller
             'akun.divisi',
             'kategori_permasalahan.tim',
             'dampak_permasalahan',
-            'respon.agent',
             'respon.lampiran',
-            'penjawab.tim'
+            'penjawab'
         ])->where('id', $id)->first();
 
         $css = file_get_contents(public_path() . '/template/back/dist/css/tabler.min.css');
         $demo = file_get_contents(public_path() . '/template/back/dist/css/demo.min.css');
         $vendors = file_get_contents(public_path() . '/template/back/dist/css/tabler-vendors.min.css');
 
-        $pdf = PDF::loadView('cetak.tiket_agent', [
+        $pdf = PDF::loadView('cetak.tiket', [
             'tiket' => $tiket,
             'css' => $css,
             'demo' => $demo,
@@ -282,7 +274,7 @@ class TiketController extends Controller
 
         if (!$cek) {
             notify()->error('Email atau NIP anda tidak terdaftar! Silahkan daftar terlebih dahulu!');
-            return redirect()->to('buat_tiket');
+            return redirect()->to('registrasi');
         }
 
         Tiket::create([
@@ -317,6 +309,15 @@ class TiketController extends Controller
                 ]);
             }
         }
+
+        // send mail to all agent
+        $agents = Akun::where('role', 'Agent')->get();
+        foreach ($agents as $agent) {
+            # code...
+            Mail::to($agent->email)->send(new NotifyTicketMail($tiket_id));
+        }
+
+
         notify()->success('Pembuatan Tiket Berhasil!');
         Session::put('tiket_id', $tiket_id);
         return redirect()->to('detail_tiket');
@@ -573,5 +574,12 @@ class TiketController extends Controller
         ]);
         return $pdf->download('data_agent-' . date('d/m/Y') . '.pdf');
         // return $pdf->stream('tiket.pdf');
+    }
+
+    public function kirimTiketMail()
+    {
+        return view('mail.tiket_mail', [
+            'tiket' => Tiket::with(['akun.divisi', 'respon'])->findOrFail(924560)
+        ]);
     }
 }
